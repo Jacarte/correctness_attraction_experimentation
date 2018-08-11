@@ -2,7 +2,7 @@ package translator;
 
 import com.github.antlrjavaparser.api.body.VariableDeclarator;
 import com.github.antlrjavaparser.api.expr.*;
-import com.github.antlrjavaparser.api.stmt.ForStmt;
+import com.github.antlrjavaparser.api.stmt.*;
 import com.github.antlrjavaparser.api.type.PrimitiveType;
 import com.github.antlrjavaparser.api.type.Type;
 import sun.tools.tree.ForStatement;
@@ -31,7 +31,8 @@ public class Translator implements ITranslator {
 
     @Override
     public void translate(UnaryExpr expr, Type target) {
-        expr.setExpr(translateExpression(expr.getExpr(), target));
+
+        // expr.setExpr(translateExpression(expr.getExpr(), target));
     }
 
     @Override
@@ -76,6 +77,58 @@ public class Translator implements ITranslator {
 
         expr.setCompare(translateExpression(expr.getCompare(), updateType));
 
+    }
+
+    @Override
+    public void translate(ReturnStmt expr, Type returnType) {
+        expr.setExpr(translateExpression(expr.getExpr(), returnType));
+    }
+
+    @Override
+    public void translate(SwitchStmt expr, Type selectorType) {
+        expr.setSelector(translateExpression(expr.getSelector(), selectorType));
+    }
+
+    @Override
+    public void translate(SwitchEntryStmt expr, Type labelType) {
+
+        if(expr.getLabel() != null)
+            expr.setLabel(translateExpression(expr.getLabel(), labelType));
+
+    }
+
+    @Override
+    public void translate(IfStmt expr, Type conditionType) {
+        expr.setCondition(translateExpression(expr.getCondition(), conditionType));
+    }
+
+    @Override
+    public void translate(WhileStmt expr, Type conditionType) {
+        expr.setCondition(translateExpression(expr.getCondition(), conditionType));
+    }
+
+    @Override
+    public void translate(DoStmt expr, Type conditionType) {
+        expr.setCondition(translateExpression(expr.getCondition(), conditionType));
+    }
+
+
+
+    @Override
+    public void translate(ExpressionStmt expr, Type t) {
+        if(expr.getExpression() instanceof UnaryExpr){
+            expr.setExpression(translateExpression(expr.getExpression(), t));
+        }
+    }
+
+    @Override
+    public void translate(ArrayAccessExpr expr, Type t) {
+        expr.setIndex(translateExpression(expr.getIndex(), t));
+    }
+
+    @Override
+    public void translate(EnclosedExpr expr, Type t) {
+        expr.setInner(translateExpression(expr.getInner(), t));
     }
 
 
