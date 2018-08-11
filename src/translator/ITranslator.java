@@ -1,5 +1,6 @@
 package translator;
 
+import com.github.antlrjavaparser.api.body.ClassOrInterfaceDeclaration;
 import com.github.antlrjavaparser.api.body.VariableDeclarator;
 import com.github.antlrjavaparser.api.expr.*;
 import com.github.antlrjavaparser.api.stmt.*;
@@ -41,11 +42,27 @@ public interface ITranslator {
 
     void translate(EnclosedExpr expr, Type t);
 
+    void translate(ClassOrInterfaceDeclaration expr);
+
     Expression getScope();
 
     void setScope(Expression scope);
 
-    String integerPerturbationMethodName();
 
-    String booleanPerturbationMethodName();
+
+    List<InterestingPoint> getPbis();
+
+
+    class InterestingPoint{
+        int colNumber;
+        int rowNumber;
+
+        String variableId;
+
+        String fileName;
+
+        String perturbationType;
+
+        int pbiIndex;
+    }
 }

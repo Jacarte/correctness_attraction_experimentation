@@ -81,8 +81,12 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
         });
 
         methods.clear();
+
+        _translator.translate(n);
+
         return null;
     }
+
 
     @Override
     public Type visit(EnumDeclaration n, Object arg) {

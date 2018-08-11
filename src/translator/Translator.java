@@ -1,10 +1,17 @@
 package translator;
 
+import com.github.antlrjavaparser.api.body.ClassOrInterfaceDeclaration;
+import com.github.antlrjavaparser.api.body.FieldDeclaration;
 import com.github.antlrjavaparser.api.body.VariableDeclarator;
+import com.github.antlrjavaparser.api.body.VariableDeclaratorId;
 import com.github.antlrjavaparser.api.expr.*;
 import com.github.antlrjavaparser.api.stmt.*;
+import com.github.antlrjavaparser.api.type.ClassOrInterfaceType;
 import com.github.antlrjavaparser.api.type.PrimitiveType;
 import com.github.antlrjavaparser.api.type.Type;
+import com.github.antlrjavaparser.api.visitor.GenericVisitor;
+import com.github.antlrjavaparser.api.visitor.VoidVisitor;
+import services.INamingService;
 import sun.tools.tree.ForStatement;
 
 import java.util.ArrayList;
@@ -16,6 +23,21 @@ public class Translator implements ITranslator {
 
     static Type intType = new PrimitiveType(PrimitiveType.Primitive.Int);
     static Type boolType = new PrimitiveType(PrimitiveType.Primitive.Boolean);
+
+    INamingService _namingService;
+    String fileName;
+
+    List<InterestingPoint> pBis = new ArrayList<>();
+
+    public Translator(String fileName, INamingService namingService){
+        this._namingService = namingService;
+        this.fileName = fileName;
+    }
+
+
+    public List<InterestingPoint> getPbis(){
+        return pBis;
+    }
 
     @Override
     public void translate(VariableDeclarator node, Type target) {
@@ -53,10 +75,38 @@ public class Translator implements ITranslator {
         if(t == null)
             return base;
 
-        if(t.equals(intType))
-            return new MethodCallExpr(getScope(), integerPerturbationMethodName(), Arrays.asList(base));
-        if(t.equals(boolType))
-            return new MethodCallExpr(getScope(), booleanPerturbationMethodName(), Arrays.asList(base));
+
+        InterestingPoint pbi = new InterestingPoint();
+
+        String perturbationName = _namingService.getNextPerturbationName();
+
+        pbi.pbiIndex = _namingService.getPbiIndex();
+
+        pbi.colNumber = base.getBeginColumn();
+        pbi.rowNumber = base.getBeginLine();
+
+        pbi.fileName = this.fileName;
+
+        pbi.variableId = perturbationName;
+
+        if(t.equals(intType)) {
+
+            pbi.perturbationType = "NUMERICAL";
+
+            pBis.add(pbi);
+
+            return new MethodCallExpr(getScope(), _namingService.getPIntMethodName(), Arrays.asList(
+                    new NameExpr(perturbationName), base));
+        }
+        if(t.equals(boolType)) {
+
+            pbi.perturbationType = "BOOLEAN";
+
+            pBis.add(pbi);
+
+            return new MethodCallExpr(getScope(), _namingService.getPBoolMethodName(), Arrays.asList(
+                    new NameExpr(perturbationName), base));
+        }
 
         return base;
     }
@@ -131,6 +181,36 @@ public class Translator implements ITranslator {
         expr.setInner(translateExpression(expr.getInner(), t));
     }
 
+    @Override
+    public void translate(ClassOrInterfaceDeclaration expr) {
+
+        getPbis().forEach(c -> {
+            addPbi(expr, c);
+        });
+
+    }
+
+    private void addPbi(ClassOrInterfaceDeclaration dec, InterestingPoint pbi){
+
+        ClassOrInterfaceType perturbationType = new ClassOrInterfaceType(
+                _namingService.getPerturbationClassName()
+        );
+
+        VariableDeclarator variable = new VariableDeclarator(
+                new VariableDeclaratorId(pbi.variableId),
+                new ObjectCreationExpr(getScope(), perturbationType,
+                        Arrays.asList(
+                                new StringLiteralExpr(String.format("%s (%s:%s)", pbi.fileName, pbi.colNumber, pbi.rowNumber)),
+                                new StringLiteralExpr(pbi.perturbationType),
+                                new IntegerLiteralExpr(String.valueOf(pbi.pbiIndex - 1))
+                        ))
+        );
+
+        FieldDeclaration f = new FieldDeclaration(_namingService.getPerturbationInstanceModifiers(), perturbationType, variable);
+
+        dec.getMembers().add(f);
+    }
+
 
     Expression scope;
 
@@ -144,13 +224,4 @@ public class Translator implements ITranslator {
         this.scope = scope;
     }
 
-    @Override
-    public String integerPerturbationMethodName() {
-        return "pInt";
-    }
-
-    @Override
-    public String booleanPerturbationMethodName() {
-        return "pBool";
-    }
 }

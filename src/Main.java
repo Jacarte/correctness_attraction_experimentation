@@ -11,6 +11,7 @@ import com.github.antlrjavaparser.api.visitor.VoidVisitorAdapter;
 import dsl.AnnotationDSLService;
 import org.w3c.dom.traversal.NodeIterator;
 import policy.PolicyFactory;
+import services.NamingService;
 import sun.tools.java.Environment;
 import translator.Translator;
 import visitor.TransformationVisitor;
@@ -27,7 +28,7 @@ public class Main {
 
         CompilationUnit unit = JavaParser.parse(new FileInputStream("./target/test.java"));
 
-        Translator t = new Translator();
+        Translator t = new Translator("test.java", new NamingService());
 
 
         unit.accept(TransformationVisitor.getInstance(new PolicyFactory(), t), null);
