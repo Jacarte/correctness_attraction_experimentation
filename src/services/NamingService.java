@@ -16,12 +16,12 @@ public class NamingService implements INamingService {
 
     @Override
     public String getPIntMethodName() {
-        return "pInt";
+        return "PerturbationEngine.getInstance().pInt";
     }
 
     @Override
     public String getPBoolMethodName() {
-        return "pBool";
+        return "PerturbationEngine.getInstance().pBool";
     }
 
     @Override
@@ -31,17 +31,27 @@ public class NamingService implements INamingService {
 
     @Override
     public String getPerturbationNamespace() {
-        return "";
+        return "api";
     }
 
     @Override
-    public String getPerturbationClassName() {
-        return "PerturbationPoint";
+    public String getIntegerPerturbationClassName() {
+        return "IntegerPerturbationPoint";
+    }
+
+    @Override
+    public String getBooleanPerturbationClassName() {
+        return "BooleanPerturbationPoint";
     }
 
     @Override
     public int getPerturbationInstanceModifiers() {
         return 9; // public static
+    }
+
+    @Override
+    public String getInstrumentationSuffix() {
+        return "Intr";
     }
 
 }

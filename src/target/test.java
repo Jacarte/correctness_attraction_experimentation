@@ -1,5 +1,6 @@
 package target;
 
+import annotations.Ignore;
 import policy.impl.IntegerLiteralPolicy;
 
 public class test {
@@ -32,6 +33,7 @@ public class test {
             sort(array, left, end);
     }
 
+    @Ignore
     private static void swap(int[] array, int i, int j) {
         int x = array[i];
         array[i] = array[j];

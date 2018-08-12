@@ -50,6 +50,8 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
             t.accept(instance, arg);
         });
 
+        _translator.translate(n);
+
         return null;
     }
 

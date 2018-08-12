@@ -1,5 +1,7 @@
 package translator;
 
+import com.github.antlrjavaparser.api.CompilationUnit;
+import com.github.antlrjavaparser.api.ImportDeclaration;
 import com.github.antlrjavaparser.api.body.ClassOrInterfaceDeclaration;
 import com.github.antlrjavaparser.api.body.FieldDeclaration;
 import com.github.antlrjavaparser.api.body.VariableDeclarator;
@@ -83,7 +85,7 @@ public class Translator implements ITranslator {
         pbi.pbiIndex = _namingService.getPbiIndex();
 
         pbi.colNumber = base.getBeginColumn();
-        pbi.rowNumber = base.getBeginLine();
+        pbi.rowNumber = base.getEndLine();
 
         pbi.fileName = this.fileName;
 
@@ -184,16 +186,25 @@ public class Translator implements ITranslator {
     @Override
     public void translate(ClassOrInterfaceDeclaration expr) {
 
+        expr.setName(expr.getName() + _namingService.getInstrumentationSuffix());
+
         getPbis().forEach(c -> {
             addPbi(expr, c);
         });
 
     }
 
+    @Override
+    public void translate(CompilationUnit unit) {
+        unit.getImports().add(new ImportDeclaration(new NameExpr(_namingService.getPerturbationNamespace()), false, true));
+    }
+
     private void addPbi(ClassOrInterfaceDeclaration dec, InterestingPoint pbi){
 
         ClassOrInterfaceType perturbationType = new ClassOrInterfaceType(
-                _namingService.getPerturbationClassName()
+                pbi.perturbationType.equals("NUMERICAL")?
+                _namingService.getIntegerPerturbationClassName() :
+                        _namingService.getBooleanPerturbationClassName()
         );
 
         VariableDeclarator variable = new VariableDeclarator(
@@ -201,7 +212,6 @@ public class Translator implements ITranslator {
                 new ObjectCreationExpr(getScope(), perturbationType,
                         Arrays.asList(
                                 new StringLiteralExpr(String.format("%s (%s:%s)", pbi.fileName, pbi.colNumber, pbi.rowNumber)),
-                                new StringLiteralExpr(pbi.perturbationType),
                                 new IntegerLiteralExpr(String.valueOf(pbi.pbiIndex - 1))
                         ))
         );

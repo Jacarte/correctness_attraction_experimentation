@@ -1,5 +1,6 @@
 package translator;
 
+import com.github.antlrjavaparser.api.CompilationUnit;
 import com.github.antlrjavaparser.api.body.ClassOrInterfaceDeclaration;
 import com.github.antlrjavaparser.api.body.VariableDeclarator;
 import com.github.antlrjavaparser.api.expr.*;
@@ -43,6 +44,8 @@ public interface ITranslator {
     void translate(EnclosedExpr expr, Type t);
 
     void translate(ClassOrInterfaceDeclaration expr);
+
+    void translate(CompilationUnit unit);
 
     Expression getScope();
 

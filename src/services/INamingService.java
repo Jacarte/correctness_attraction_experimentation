@@ -12,7 +12,11 @@ public interface INamingService {
 
     String getPerturbationNamespace();
 
-    String getPerturbationClassName();
+    String getIntegerPerturbationClassName();
+
+    String getBooleanPerturbationClassName();
 
     int getPerturbationInstanceModifiers();
+
+    String getInstrumentationSuffix();
 }

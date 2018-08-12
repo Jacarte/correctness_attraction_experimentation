@@ -13,10 +13,12 @@ import org.w3c.dom.traversal.NodeIterator;
 import policy.PolicyFactory;
 import services.NamingService;
 import sun.tools.java.Environment;
+import target.testIntr;
 import translator.Translator;
 import visitor.TransformationVisitor;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -33,6 +35,13 @@ public class Main {
 
         unit.accept(TransformationVisitor.getInstance(new PolicyFactory(), t), null);
 
-        System.out.println(unit.toString());
+
+        FileOutputStream out = new FileOutputStream("./target/" + unit.getTypes().get(0).getName() + ".java");
+
+        out.write(unit.toString().getBytes());
+
+        out.close();
+
+        testIntr.sort(new int[] {2,11, 4, 1, 2, 3}, 0, 5);
     }
 }
