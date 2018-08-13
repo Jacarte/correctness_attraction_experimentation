@@ -1,9 +1,6 @@
 package services.visitor;
 
-import com.github.antlrjavaparser.api.CompilationUnit;
-import com.github.antlrjavaparser.api.ImportDeclaration;
-import com.github.antlrjavaparser.api.PackageDeclaration;
-import com.github.antlrjavaparser.api.TypeParameter;
+import com.github.antlrjavaparser.api.*;
 import com.github.antlrjavaparser.api.body.*;
 import com.github.antlrjavaparser.api.expr.*;
 import com.github.antlrjavaparser.api.stmt.*;
@@ -13,10 +10,7 @@ import services.policies.IPolicyFactory;
 import services.api.ITranslator;
 import services.utils.IServiceProvider;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TransformationVisitor implements GenericVisitor<Type, Object> {
@@ -644,18 +638,23 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
         Type updateType = null;
 
         if(n.getCompare() != null) {
+
              updateType = n.getCompare().accept(_serviceProvider.getVisitor(), arg);
         }
 
+        List<Type> updateTypes = new ArrayList<>();
+
         if(n.getUpdate() != null)
             n.getUpdate().forEach(e -> {
-                e.accept(_serviceProvider.getVisitor(), arg);
+                Type upType = e.accept(_serviceProvider.getVisitor(), arg);
+                updateTypes.add(upType);
+
             });
 
 
         n.getBody().accept(_serviceProvider.getVisitor(), arg);
 
-        _serviceProvider.getTranslator().translate(n, updateType);
+        _serviceProvider.getTranslator().translate(n, updateTypes);
 
         return null;
     }

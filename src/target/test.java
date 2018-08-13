@@ -4,38 +4,16 @@ import annotations.Ignore;
 
 public class test {
 
-    public static void sort(int[] array, int beg, int end) {
+    static int getMaximum(int[] a){
 
-        int left = beg, right = end;
-        int pivot = array[beg + ((end - beg) / 2)];
+        int result = a[0];
 
-        while (left <= right) {
+        int j = 0;
 
-            while (array[left] < pivot) {
-                left++;
-            }
+        for(int i = 0; i < a.length; i++, j++)
+            if(result < a[i])
+                result = a[i];
 
-            while (array[right] > pivot) {
-                right--;
-            }
-
-            if (left <= right) {
-                swap(array, left, right);
-                left++;
-                right--;
-            }
-
-        }
-        if (beg < right)
-            sort(array, beg, right);
-        if (end > left)
-            sort(array, left, end);
-    }
-
-    @Ignore
-    private static void swap(int[] array, int i, int j) {
-        int x = array[i];
-        array[i] = array[j];
-        array[j] = x;
+        return result;
     }
 }

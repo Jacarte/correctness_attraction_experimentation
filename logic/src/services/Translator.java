@@ -111,19 +111,28 @@ public class Translator implements ITranslator {
     @Override
     public void translate(BinaryExpr expr, Type leftType, Type rightType) {
 
-        if(leftType != null && rightType != null){
+        Type t = leftType;
 
-            expr.setLeft(translateExpression(expr.getLeft(), leftType));
-            expr.setRight(translateExpression(expr.getRight(), rightType));
-        }
+        if(leftType == null)
+            t = rightType;
+
+        expr.setLeft(translateExpression(expr.getLeft(), t));
+        expr.setRight(translateExpression(expr.getRight(), t));
 
     }
 
     @Override
-    public void translate(ForStmt expr, Type updateType) {
+    public void translate(ForStmt expr, List<Type> updateTypes) {
 
-        expr.setCompare(translateExpression(expr.getCompare(), updateType));
+        expr.setCompare(translateExpression(expr.getCompare(), new PrimitiveType(PrimitiveType.Primitive.Boolean)));
 
+        List<Expression> exp = new ArrayList<>();
+
+        for(int i = 0; i < updateTypes.size(); i++){
+            exp.add(translateExpression(expr.getUpdate().get(i), updateTypes.get(i)));
+        }
+
+        expr.setUpdate(exp);
     }
 
     @Override
@@ -167,6 +176,7 @@ public class Translator implements ITranslator {
             expr.setExpression(translateExpression(expr.getExpression(), t));
         }
     }
+
 
     @Override
     public void translate(ArrayAccessExpr expr, Type t) {

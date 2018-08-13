@@ -23,7 +23,7 @@ public interface ITranslator {
 
     void translate(BinaryExpr expr, Type leftType, Type rightType);
 
-    void translate(ForStmt expr, Type updateType);
+    void translate(ForStmt expr, List<Type> updateTypes);
 
     void translate(ReturnStmt expr, Type returnType);
 
