@@ -9,6 +9,7 @@ import services.api.ITranslator;
 import services.engine.IPerturbationEngine;
 import services.engine.NamingService;
 import services.engine.PolicyFactory;
+import services.interpolator.IntegerInterpolator;
 import services.interpolator.Interpolator;
 import services.interpolator.SequencialInterpolator;
 import services.policies.IPolicyFactory;
@@ -20,6 +21,16 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class ServiceProvider implements IServiceProvider {
+
+    static IServiceProvider _serviceProvider;
+
+    public static IServiceProvider getProvider(){
+
+        if(_serviceProvider == null)
+            _serviceProvider = new ServiceProvider();
+
+        return _serviceProvider;
+    }
 
     static INamingService _namingService;
 
@@ -55,8 +66,10 @@ public class ServiceProvider implements IServiceProvider {
 
     }
 
+    IntegerInterpolator iInterpolator;
+
     @Override
-    public Interpolator<int[], Integer> getInterpolator() {
+    public IntegerInterpolator getIntegerInterpolator() {
         return new SequencialInterpolator();
     }
 
@@ -65,8 +78,14 @@ public class ServiceProvider implements IServiceProvider {
         return new PolicyFactory();
     }
 
+    static PerturbationEngine engine;
+
     @Override
     public IPerturbationEngine getPerturbationEngine() {
-        return new PerturbationEngine();
+
+        if(engine == null)
+            engine = new PerturbationEngine();
+
+        return engine;
     }
 }

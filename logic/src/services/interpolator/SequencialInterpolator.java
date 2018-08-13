@@ -3,18 +3,28 @@ package services.interpolator;
 
 import services.interpolator.Interpolator;
 
-public class SequencialInterpolator implements Interpolator<int[], Integer> {
+public class SequencialInterpolator implements IntegerInterpolator{
 
+
+    int startFrom = -5;
+    int endIn = 5;
+
+    int current = startFrom;
 
     @Override
-    public int[] interpolate(Integer value) {
-
-        int[] result = new int[10];
-
-        for(int i = -5 ;i  < result.length - 5; i++){
-            result[i + 5] = value + i;
-        }
-
-        return result;
+    public Object getNext() {
+        return current++;
     }
+
+    @Override
+    public boolean canNext() {
+        return current != endIn;
+    }
+
+    @Override
+    public void reset() {
+        current = startFrom;
+    }
+
+
 }

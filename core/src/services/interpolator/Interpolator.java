@@ -1,8 +1,10 @@
 package services.interpolator;
 
-public interface Interpolator<Tr, Tvalue> {
+public interface Interpolator{
 
-    Tr interpolate(Tvalue value);
+    Object getNext();
 
+    boolean canNext();
 
+    void reset();
 }

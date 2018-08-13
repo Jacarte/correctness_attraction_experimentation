@@ -36,7 +36,7 @@ public class NamingService implements INamingService {
 
     @Override
     public List<String> getPerturbationNamespace() {
-        return Arrays.asList("api", "services", "services.utils", "services.engine", "pbi");
+        return Arrays.asList("services", "services.utils", "services.engine", "pbi");
     }
 
     @Override

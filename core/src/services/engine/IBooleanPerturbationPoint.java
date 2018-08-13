@@ -1,4 +1,7 @@
 package services.engine;
 
-public interface IBooleanPerturbationPoint {
+public interface IBooleanPerturbationPoint extends IPerturbationPoint {
+
+
+
 }

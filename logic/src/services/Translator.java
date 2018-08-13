@@ -229,7 +229,8 @@ public class Translator implements ITranslator {
                         new ObjectCreationExpr(getScope(), perturbationType,
                                 Arrays.asList(
                                         new StringLiteralExpr(String.format("%s (%s:%s)", pbi.fileName, pbi.colNumber, pbi.rowNumber)),
-                                        new IntegerLiteralExpr(String.valueOf(pbi.pbiIndex - 1))
+                                        new IntegerLiteralExpr(String.valueOf(pbi.pbiIndex - 1)),
+                                        new NameExpr("_serviceProvider")
                                 )), AssignExpr.Operator.assign)
         ));
 

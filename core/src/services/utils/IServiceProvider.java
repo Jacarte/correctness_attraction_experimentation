@@ -4,6 +4,7 @@ import com.github.antlrjavaparser.api.visitor.GenericVisitor;
 import services.api.INamingService;
 import services.api.ITranslator;
 import services.engine.IPerturbationEngine;
+import services.interpolator.IntegerInterpolator;
 import services.interpolator.Interpolator;
 import com.github.antlrjavaparser.api.type.*;
 import services.policies.IPolicyFactory;
@@ -18,7 +19,7 @@ public interface IServiceProvider {
 
     GenericVisitor<Type, Object> getVisitor();
 
-    Interpolator<int[], Integer> getInterpolator();
+    IntegerInterpolator getIntegerInterpolator();
 
     IPolicyFactory getPolicyFactory();
 

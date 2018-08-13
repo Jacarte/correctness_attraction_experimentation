@@ -5,9 +5,14 @@ import java.util.List;
 
 public interface IPerturbationEngine {
 
-        void makeSpace();
+        void makeSpace(ISpaceExplorer.ICallback callback);
+
+        ISpaceExplorer getExplorer();
 
         int pInt(IIntegerPerturbationPoint pbi, int value);
+
         boolean pBool(IBooleanPerturbationPoint pbi, boolean value);
+
+        void addPbi(IPerturbationPoint pbi);
 
 }
