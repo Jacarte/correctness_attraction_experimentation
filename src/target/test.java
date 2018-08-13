@@ -8,9 +8,8 @@ public class test {
 
         int result = a[0];
 
-        int j = 0;
 
-        for(int i = 0; i < a.length; i++, j++)
+        for(int i = 0; i < a.length; i++)
             if(result < a[i])
                 result = a[i];
 

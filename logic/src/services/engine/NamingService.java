@@ -21,12 +21,18 @@ public class NamingService implements INamingService {
 
     @Override
     public String getPIntMethodName() {
-        return "_serviceProvider.getPerturbationEngine().pInt";
+        return engineName() + ".pInt";
+    }
+
+
+    @Override
+    public String engineName() {
+        return "pE";
     }
 
     @Override
     public String getPBoolMethodName() {
-        return "_serviceProvider.getPerturbationEngine().pBool";
+        return engineName() + ".pBool";
     }
 
     @Override

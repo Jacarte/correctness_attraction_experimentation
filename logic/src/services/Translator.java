@@ -201,12 +201,24 @@ public class Translator implements ITranslator {
         MethodDeclaration setup = new MethodDeclaration(9,
                 new VoidType(), "setupPerturbation" );
 
+        ClassOrInterfaceType perturbationInterfaceClass = new ClassOrInterfaceType("IPerturbationEngine");
+
+
+        ClassOrInterfaceType concretePerturbationClass = new ClassOrInterfaceType("PerturbationEngine");
+
+        expr.getMembers().add(new FieldDeclaration(9, perturbationInterfaceClass, new VariableDeclarator(new VariableDeclaratorId(_namingService.engineName()))));
+
         setup.setBody(new BlockStmt(new ArrayList<>()));
+
+        setup.getBody().getStmts().add(new ExpressionStmt(
+                new AssignExpr(new NameExpr(_namingService.engineName()),
+                        new MethodCallExpr(getScope(),"_serviceProvider.getPerturbationEngine"), AssignExpr.Operator.assign)
+        ));
+
 
         getPbis().forEach(c -> {
             addPbi(expr, c, setup);
         });
-
         expr.getMembers().add(setup);
     }
 
@@ -233,6 +245,8 @@ public class Translator implements ITranslator {
         VariableDeclarator variable = new VariableDeclarator(
                 new VariableDeclaratorId(pbi.variableId)
         );
+
+
 
         setupExpression.getBody().getStmts().add(new ExpressionStmt(
                 new AssignExpr(new NameExpr(pbi.variableId),
