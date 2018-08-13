@@ -1,7 +1,6 @@
 package target;
 
 import annotations.Ignore;
-import policy.impl.IntegerLiteralPolicy;
 
 public class test {
 

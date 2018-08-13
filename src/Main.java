@@ -1,39 +1,34 @@
 import com.github.antlrjavaparser.JavaParser;
 import com.github.antlrjavaparser.api.*;
-import com.github.antlrjavaparser.api.body.*;
-import com.github.antlrjavaparser.api.expr.*;
-import com.github.antlrjavaparser.api.stmt.*;
-import com.github.antlrjavaparser.api.type.*;
-import com.github.antlrjavaparser.api.visitor.GenericVisitor;
-import com.github.antlrjavaparser.api.visitor.GenericVisitorAdapter;
-import com.github.antlrjavaparser.api.visitor.VoidVisitor;
-import com.github.antlrjavaparser.api.visitor.VoidVisitorAdapter;
-import dsl.AnnotationDSLService;
-import org.w3c.dom.traversal.NodeIterator;
-import policy.PolicyFactory;
-import services.NamingService;
-import sun.tools.java.Environment;
-import target.testIntr;
-import translator.Translator;
-import visitor.TransformationVisitor;
+import services.Translator;
+import services.api.INamingService;
+import services.api.ITranslator;
+import services.engine.PolicyFactory;
+import services.engine.NamingService;
+import services.test.IService1;
+import services.test.IService2;
+import services.test.Service1;
+import services.test.Service2;
+import services.utils.IServiceProvider;
+import services.utils.ServiceProvider;
+import services.visitor.TransformationVisitor;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Optional;
+import java.lang.reflect.InvocationTargetException;
 
 public class Main {
 
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, IllegalAccessException, InstantiationException, InvocationTargetException {
+
+        setup();
 
         CompilationUnit unit = JavaParser.parse(new FileInputStream("./target/test.java"));
 
-        Translator t = new Translator("test.java", new NamingService());
-
-
-        unit.accept(TransformationVisitor.getInstance(new PolicyFactory(), t), null);
+        unit.accept(provider.getVisitor(), null);
 
 
         FileOutputStream out = new FileOutputStream("./target/" + unit.getTypes().get(0).getName() + ".java");
@@ -42,6 +37,15 @@ public class Main {
 
         out.close();
 
-        testIntr.sort(new int[] {2,11, 4, 1, 2, 3}, 0, 5);
+
+
+    }
+
+    static IServiceProvider provider;
+
+    public static void setup(){
+
+        provider = new ServiceProvider();
+
     }
 }
