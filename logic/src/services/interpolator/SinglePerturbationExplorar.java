@@ -25,7 +25,7 @@ public class SinglePerturbationExplorar implements ISpaceExplorer {
         while(current.canPerturb(engine)){
 
             current.next();
-            
+
             callback._do();
 
         }
