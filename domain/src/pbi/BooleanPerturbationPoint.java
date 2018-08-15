@@ -13,7 +13,8 @@ public class BooleanPerturbationPoint extends PerturbationPoint implements IBool
     public BooleanPerturbationPoint(String location, int index, String originalExpression, IServiceProvider provider) {
         super(location, index, originalExpression, provider);
 
-        provider.getPerturbationEngine().addPbi(this);
+        if(provider.getPerturbationEngine().isPBoolEnabled())
+            provider.getPerturbationEngine().addPbi(this);
     }
 
     @Override

@@ -6,8 +6,8 @@ import services.interpolator.Interpolator;
 public class SequencialInterpolator implements IntegerInterpolator{
 
 
-    int startFrom = -100;
-    int endIn = 100;
+    protected int startFrom = -100;
+    protected int endIn = 100;
 
     int current = startFrom;
 

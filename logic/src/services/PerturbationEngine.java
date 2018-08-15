@@ -4,6 +4,7 @@ import pbi.BooleanPerturbationPoint;
 import pbi.IntegerPerturbationPoint;
 import pbi.PerturbationPoint;
 import services.engine.*;
+import services.interpolator.IntegerArrayInputProvider;
 import services.interpolator.SinglePerturbationExplorar;
 import services.utils.ServiceProvider;
 
@@ -16,9 +17,14 @@ public class PerturbationEngine implements IPerturbationEngine {
     List<IPerturbationPoint> pbis = new ArrayList<>();
 
     @Override
-    public void makeSpace(ISpaceExplorer.ICallback callback, ISpaceExplorer.IAnswerChecker checker, ISpaceExplorer.IExpectedProvider provider) {
+    public void makeSpace(ISpaceExplorer.ICallback callback, ISpaceExplorer.IAnswerChecker checker, ISpaceExplorer.IExpectedProvider provider, ISpaceExplorer.IInputProvider inputProvider) {
 
-        getExplorer().makeSpace(pbis, callback, this, checker, provider, ServiceProvider.getProvider().getLogger());
+        getExplorer().makeSpace(pbis, callback, this, checker, provider, inputProvider, ServiceProvider.getProvider().getLogger());
+    }
+
+    @Override
+    public void makeSpace(ISpaceExplorer.IManager manager, ISpaceExplorer.IInputProvider inputProvider) {
+        makeSpace(manager, manager, manager, inputProvider);
     }
 
     @Override
@@ -41,6 +47,16 @@ public class PerturbationEngine implements IPerturbationEngine {
     @Override
     public void addPbi(IPerturbationPoint pbi) {
         this.pbis.add(pbi);
+    }
+
+    @Override
+    public boolean isPoneEnabled() {
+        return true;
+    }
+
+    @Override
+    public boolean isPBoolEnabled() {
+        return false;
     }
 
 }

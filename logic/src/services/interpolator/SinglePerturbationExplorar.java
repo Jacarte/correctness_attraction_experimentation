@@ -7,48 +7,55 @@ import services.engine.ISpaceExplorer;
 
 import java.lang.management.MemoryUsage;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class SinglePerturbationExplorar implements ISpaceExplorer {
 
+
     @Override
-    public void makeSpace(List<IPerturbationPoint> pbis, ICallback callback, IPerturbationEngine engine, IAnswerChecker checker, IExpectedProvider provider, ILogger logger) {
+    public <Tin, Tout> void makeSpace(List<IPerturbationPoint> pbis, ICallback<Tin, Tout> callback, IPerturbationEngine engine, IAnswerChecker<Tout> checker, IExpectedProvider<Tin, Tout> provider, IInputProvider<Tin> inputProvider, ILogger logger) {
 
-        makeSpaceAux(pbis, callback, engine, 0, checker , provider, logger);
+        Map<IPerturbationPoint, PbiSummary> summaries = new TreeMap<>();
 
-    }
+        while(inputProvider.canNext()){
 
-    private void makeSpaceAux(List<IPerturbationPoint> pbis, ICallback callback, IPerturbationEngine engine, int index, IAnswerChecker rightAnswer, IExpectedProvider provider, ILogger logger){
+            Tin input = inputProvider.getIn();
 
-        if(index == pbis.size())
-            return;
+            Tout expected = provider.get(input);
 
-        IPerturbationPoint current = pbis.get(index);
+            for(IPerturbationPoint pbi: pbis){
 
-        while(current.canPerturb(engine)){
+                if(!summaries.containsKey(pbi))
+                    summaries.put(pbi, new PbiSummary());
 
-            current.next();
+                while(pbi.canPerturb(engine)){
 
-            long timeNow = System.nanoTime();
+                    pbi.next();
 
-            try{
+                    try {
+                        Tout result = callback._do(input);
 
+                        boolean isRight = checker._do(result, expected);
 
-                Object result = callback._do();
+                        if(isRight)
+                            summaries.get(pbi).successCount++;
+                        else
+                            summaries.get(pbi).wrongCount++;
+                    }
+                    catch (Exception e){
+                        summaries.get(pbi).errorCount++;
+                    }
+                }
 
-                timeNow = System.nanoTime() - timeNow;
-
-                boolean isRight = rightAnswer._do(result);
-
-                logger.logResult(current, isRight, null, timeNow, 0, 0, provider.get() , result );
-
-            }
-            catch (Exception e){
-                timeNow = System.nanoTime() - timeNow;
-                logger.logResult(current, false, e, timeNow, 0, 0, provider.get() , null );
+                pbi.reset();
             }
         }
 
-        current.reset();
-        makeSpaceAux(pbis, callback, engine, index + 1, rightAnswer,provider, logger);
+    }
+
+    @Override
+    public <Tin, Tout> void makeSpace(List<IPerturbationPoint> pbis, IPerturbationEngine engine, IManager<Tin, Tout> manager, IInputProvider<Tin> inputProvider, ILogger logger) {
+        makeSpace(pbis, manager, engine, manager, manager, inputProvider, logger);
     }
 }

@@ -6,6 +6,7 @@ import services.api.ITranslator;
 import services.engine.ISpaceExplorer;
 import services.engine.PolicyFactory;
 import services.engine.NamingService;
+import services.interpolator.IntegerArrayInputProvider;
 import services.test.IService1;
 import services.test.IService2;
 import services.test.Service1;
@@ -49,11 +50,9 @@ public class Main {
 
         testIntr.setupPerturbation();
 
-        provider.getPerturbationEngine().makeSpace(
-                () -> testIntr.getMaximum(new int[] {1,2,25,1,3,12,12,22}),
-                (obj) -> obj.equals(test.getMaximum(new int[] {1,2,25,1,3,12,12,22})),
-                () -> test.getMaximum(new int[] {1,2,25,1,3,12,12,22})
-                );
+        testManager manager = new testManager();
+
+        provider.getPerturbationEngine().makeSpace(manager, new IntegerArrayInputProvider());
 
     }
 

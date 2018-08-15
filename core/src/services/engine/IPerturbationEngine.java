@@ -5,7 +5,10 @@ import java.util.List;
 
 public interface IPerturbationEngine {
 
-        void makeSpace(ISpaceExplorer.ICallback callback, ISpaceExplorer.IAnswerChecker checker, ISpaceExplorer.IExpectedProvider provider);
+        void makeSpace(ISpaceExplorer.ICallback callback, ISpaceExplorer.IAnswerChecker checker, ISpaceExplorer.IExpectedProvider provider, ISpaceExplorer.IInputProvider inputProvider);
+
+        void makeSpace(ISpaceExplorer.IManager manager, ISpaceExplorer.IInputProvider inputProvider);
+
 
         ISpaceExplorer getExplorer();
 
@@ -14,5 +17,9 @@ public interface IPerturbationEngine {
         boolean pBool(IBooleanPerturbationPoint pbi, boolean value);
 
         void addPbi(IPerturbationPoint pbi);
+
+        boolean isPoneEnabled();
+
+        boolean isPBoolEnabled();
 
 }

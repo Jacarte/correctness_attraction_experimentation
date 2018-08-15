@@ -4,21 +4,53 @@ import java.util.List;
 
 public interface ISpaceExplorer {
 
-    void makeSpace(List<IPerturbationPoint> pbis, ICallback callback, IPerturbationEngine engine, IAnswerChecker checker,IExpectedProvider provider, ILogger logger);
+    <Tin, Tout> void makeSpace(List<IPerturbationPoint> pbis,
+                               ICallback<Tin, Tout> callback,
+                               IPerturbationEngine engine,
+                               IAnswerChecker<Tout> checker,
+                               IExpectedProvider<Tin, Tout> provider,
+                               IInputProvider<Tin> inputProvider,
+                               ILogger logger);
+    <Tin, Tout> void makeSpace(List<IPerturbationPoint> pbis,
+                               IPerturbationEngine engine,
+                               IManager<Tin, Tout> manager,
+                               IInputProvider<Tin> inputProvider,
+                               ILogger logger);
 
 
-    interface ICallback{
-        Object _do();
+
+    interface ICallback<Tin, Tout>{
+        Tout _do(Tin in);
     }
 
-    interface IAnswerChecker{
+    interface IAnswerChecker<Tout>{
+        boolean _do(Tout result, Tout expected);
+    }
 
-        boolean _do(Object result);
+    interface IExpectedProvider<Tin, Tout>{
+        Tout get(Tin in);
+    }
+
+    interface IInputProvider<Tin>{
+
+        boolean canNext();
+
+        Tin getIn();
+    }
+
+    interface IManager<Tin, Tout> extends ICallback<Tin, Tout>, IExpectedProvider<Tin, Tout>, IAnswerChecker<Tout> {
 
     }
 
-    interface IExpectedProvider{
-        Object get();
-    }
+    class PbiSummary{
+        public int errorCount;
+        public int successCount;
+        public int wrongCount;
 
+
+        @Override
+        public String toString() {
+            return String.format("e:%s s:%s w:%s", errorCount, successCount, wrongCount);
+        }
+    }
 }

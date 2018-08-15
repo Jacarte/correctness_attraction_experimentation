@@ -53,4 +53,14 @@ public abstract class PerturbationPoint implements IPerturbationPoint {
     public String getOriginalExpression() {
         return originalExpression;
     }
+
+    @Override
+    public int compareTo(IPerturbationPoint o) {
+        return index - o.getIndex() ;
+    }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

@@ -72,7 +72,7 @@ public class ServiceProvider implements IServiceProvider {
     @Override
     public IntegerInterpolator getIntegerInterpolator() {
 
-        return new SequencialInterpolator();
+        return new POneInterpolator();
     }
 
 

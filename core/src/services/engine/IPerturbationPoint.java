@@ -2,7 +2,7 @@ package services.engine;
 
 import services.interpolator.Interpolator;
 
-public interface IPerturbationPoint {
+public interface IPerturbationPoint extends Comparable<IPerturbationPoint> {
 
     void reset();
 

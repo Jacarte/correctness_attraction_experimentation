@@ -13,7 +13,8 @@ public class IntegerPerturbationPoint extends PerturbationPoint implements IInte
     public IntegerPerturbationPoint(String location, int index, String originalExpression, IServiceProvider provider) {
         super(location, index, originalExpression, provider);
 
-        provider.getPerturbationEngine().addPbi(this);
+        if(provider.getPerturbationEngine().isPoneEnabled())
+            provider.getPerturbationEngine().addPbi(this);
     }
 
     public int getValue(int value){
