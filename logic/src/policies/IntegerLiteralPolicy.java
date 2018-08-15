@@ -8,7 +8,7 @@ public class IntegerLiteralPolicy implements IPolicy<IntegerLiteralExpr> {
     @Override
     public boolean check(IntegerLiteralExpr node) {
 
-        System.out.println("Literal integer found at col: " + node.getBeginColumn());
+        // System.out.println("Literal integer found at col: " + node.getBeginColumn());
 
         return true;
     }

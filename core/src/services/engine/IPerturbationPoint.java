@@ -8,7 +8,19 @@ public interface IPerturbationPoint {
 
     boolean canPerturb(IPerturbationEngine engine);
 
+    String getName();
+
+    int getLine();
+
+    int getCol();
+
     void next();
 
+    Object getPerturbationValue();
+
     Interpolator getInterpolator();
+
+    int getIndex();
+
+    String getOriginalExpression();
 }

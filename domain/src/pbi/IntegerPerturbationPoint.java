@@ -10,18 +10,13 @@ public class IntegerPerturbationPoint extends PerturbationPoint implements IInte
 
     int step = 0;
 
-    public IntegerPerturbationPoint(String location, int index, IServiceProvider provider) {
-        super(location, index, provider);
+    public IntegerPerturbationPoint(String location, int index, String originalExpression, IServiceProvider provider) {
+        super(location, index, originalExpression, provider);
 
         provider.getPerturbationEngine().addPbi(this);
     }
 
     public int getValue(int value){
-
-        System.out.println(this.location + "==================");
-        System.out.println(String.valueOf(this.step));
-        System.out.println(String.valueOf(value));
-
         return step + value;
     }
 
@@ -47,6 +42,12 @@ public class IntegerPerturbationPoint extends PerturbationPoint implements IInte
 
         this.step = (int)getInterpolator().getNext();
     }
+
+    @Override
+    public Object getPerturbationValue() {
+        return step;
+    }
+
 
     Interpolator interpolator;
 

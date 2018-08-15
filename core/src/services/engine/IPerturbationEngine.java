@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface IPerturbationEngine {
 
-        void makeSpace(ISpaceExplorer.ICallback callback);
+        void makeSpace(ISpaceExplorer.ICallback callback, ISpaceExplorer.IAnswerChecker checker, ISpaceExplorer.IExpectedProvider provider);
 
         ISpaceExplorer getExplorer();
 

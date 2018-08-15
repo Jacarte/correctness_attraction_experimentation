@@ -6,12 +6,11 @@ import services.PerturbationEngine;
 import services.Translator;
 import services.api.INamingService;
 import services.api.ITranslator;
+import services.engine.ILogger;
 import services.engine.IPerturbationEngine;
 import services.engine.NamingService;
 import services.engine.PolicyFactory;
-import services.interpolator.IntegerInterpolator;
-import services.interpolator.Interpolator;
-import services.interpolator.SequencialInterpolator;
+import services.interpolator.*;
 import services.policies.IPolicyFactory;
 import services.visitor.TransformationVisitor;
 
@@ -28,6 +27,8 @@ public class ServiceProvider implements IServiceProvider {
 
         if(_serviceProvider == null)
             _serviceProvider = new ServiceProvider();
+
+        StaticUtils.serviceProvider = _serviceProvider;
 
         return _serviceProvider;
     }
@@ -70,7 +71,14 @@ public class ServiceProvider implements IServiceProvider {
 
     @Override
     public IntegerInterpolator getIntegerInterpolator() {
+
         return new SequencialInterpolator();
+    }
+
+
+    @Override
+    public IBooleanInterpolator getBooleanInterpolator() {
+        return new BooleanInterpolator();
     }
 
     @Override
@@ -87,5 +95,13 @@ public class ServiceProvider implements IServiceProvider {
             engine = new PerturbationEngine();
 
         return engine;
+    }
+
+    static ILogger logger;
+
+    @Override
+    public ILogger getLogger() {
+        if(logger == null) logger = new FileLoggerService();
+        return logger;
     }
 }

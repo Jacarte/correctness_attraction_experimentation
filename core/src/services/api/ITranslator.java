@@ -52,6 +52,7 @@ public interface ITranslator {
     void setScope(Expression scope);
 
 
+    void setFileName(String name);
 
     List<InterestingPoint> getPbis();
 
@@ -67,5 +68,7 @@ public interface ITranslator {
         public String perturbationType;
 
         public int pbiIndex;
+
+        public String original;
     }
 }

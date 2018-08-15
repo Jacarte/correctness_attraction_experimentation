@@ -25,6 +25,13 @@ public class Translator implements ITranslator {
     INamingService _namingService;
     String fileName;
 
+    int rowCumul = 0;
+    int colCumul = 0;
+
+    public void setFileName(String name){
+        this.fileName = name;
+    }
+
     List<InterestingPoint> pBis = new ArrayList<>();
 
     public Translator(INamingService namingService){
@@ -79,12 +86,13 @@ public class Translator implements ITranslator {
 
         pbi.pbiIndex = _namingService.getPbiIndex();
 
-        pbi.colNumber = base.getBeginColumn();
-        pbi.rowNumber = base.getEndLine();
+        pbi.colNumber = base.getBeginColumn() + colCumul;
+        pbi.rowNumber = base.getEndLine() + colCumul;
 
         pbi.fileName = this.fileName;
 
         pbi.variableId = perturbationName;
+        pbi.original = base.toString();
 
         if(t.equals(intType)) {
 
@@ -220,6 +228,9 @@ public class Translator implements ITranslator {
             addPbi(expr, c, setup);
         });
         expr.getMembers().add(setup);
+
+        rowCumul = expr.getBeginLine();
+        colCumul = expr.getBeginColumn();
     }
 
     @Override
@@ -254,6 +265,7 @@ public class Translator implements ITranslator {
                                 Arrays.asList(
                                         new StringLiteralExpr(String.format("%s (%s:%s)", pbi.fileName, pbi.colNumber, pbi.rowNumber)),
                                         new IntegerLiteralExpr(String.valueOf(pbi.pbiIndex - 1)),
+                                        new StringLiteralExpr(pbi.original),
                                         new NameExpr("_serviceProvider")
                                 )), AssignExpr.Operator.assign)
         ));

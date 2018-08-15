@@ -4,7 +4,7 @@ import annotations.Ignore;
 
 public class test {
 
-    static int getMaximum(int[] a){
+    public static int getMaximum(int[] a){
 
         int result = a[0];
 
