@@ -23,9 +23,13 @@ public class SummariesCollector implements ISummariesCollector {
 
             double total = summaries.get(pbi).successCount + summaries.get(pbi).wrongCount + summaries.get(pbi).errorCount;
 
-            sum.correctProportion = summaries.get(pbi).successCount/total;
-            sum.brokenProportion = summaries.get(pbi).wrongCount/total;
-            sum.errorProportion = summaries.get(pbi).errorCount/total;
+            sum.correctCount = summaries.get(pbi).successCount;
+            sum.brokenCount = summaries.get(pbi).wrongCount;
+            sum.errorCount = summaries.get(pbi).errorCount;
+
+            sum.errorProportion = sum.errorCount/total;
+            sum.correctProportion = sum.correctCount/total;
+            sum.brokenProportion = sum.brokenCount/total;
 
             result.proportions.put(pbi, sum);
 

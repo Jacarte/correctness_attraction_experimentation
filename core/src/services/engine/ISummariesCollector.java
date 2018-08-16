@@ -21,6 +21,10 @@ public interface ISummariesCollector {
         public double brokenProportion;
         public double errorProportion;
 
+
+        public  int correctCount;
+        public int brokenCount;
+        public  int errorCount;
     }
 
 }

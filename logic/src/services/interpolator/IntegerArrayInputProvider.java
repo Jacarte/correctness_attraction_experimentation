@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class IntegerArrayInputProvider implements ISpaceExplorer.IInputProvider<int[]> {
 
-    int count = 600;
+    int count = 10000;
 
     public IntegerArrayInputProvider(){
 
@@ -29,12 +29,12 @@ public class IntegerArrayInputProvider implements ISpaceExplorer.IInputProvider<
     }
 
     int[] createRandomArray(){
-        int size = new Random().nextInt(1000) + 1;
+        int size = new Random().nextInt(2000) + 1;
 
         int[] result = new int[size];
 
         for(int i = 0; i < result.length; i++){
-            result[i] = new Random().nextInt(40000);
+            result[i] = new Random().nextInt(400000);
         }
 
         return result;

@@ -38,5 +38,14 @@ public class ConsoleLoggerService implements ILogger {
 
 
         System.out.println("=============================================");
+
+        for(IPerturbationPoint pbi: summary.proportions.keySet()){
+
+            ISummariesCollector.PointSummary sum = summary.proportions.get(pbi);
+
+
+            System.out.println(String.format("i:%s name:%s code: %s succ:%s fail:%s error:%s correct_ratio:%s",pbi.getIndex(), pbi.getName(), pbi.getOriginalExpression(), sum.correctCount, sum.brokenCount, sum.errorCount, sum.correctProportion ));
+
+        }
     }
 }
