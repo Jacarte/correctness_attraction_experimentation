@@ -2,6 +2,10 @@ package services.utils;
 
 import services.engine.ILogger;
 import services.engine.IPerturbationPoint;
+import services.engine.ISpaceExplorer;
+import services.engine.ISummariesCollector;
+
+import java.util.Map;
 
 public class ConsoleLoggerService implements ILogger {
     @Override
@@ -13,5 +17,26 @@ public class ConsoleLoggerService implements ILogger {
                 rightResult, ex != null? ex.getStackTrace()[0].toString(): "",
                 memoryWaste,
                 cpuWaste));
+    }
+
+    @Override
+    public void logResult(String fileName, Map<IPerturbationPoint, ISpaceExplorer.PbiSummary> summaries) {
+
+        for(IPerturbationPoint pbi: summaries.keySet()){
+
+            ISpaceExplorer.PbiSummary summary = summaries.get(pbi);
+
+            System.out.println(String.format("%s s:%s w:%s e:%s", pbi.getName(), summary.successCount, summary.wrongCount, summary.errorCount));
+        }
+
+    }
+
+    @Override
+    public void logResult(ISummariesCollector.WholeSummary summary) {
+        System.out.println("Total success: " + summary.totalSuccess);
+        System.out.println("Correctness ratio: " + summary.correctnessRatio);
+
+
+        System.out.println("=============================================");
     }
 }

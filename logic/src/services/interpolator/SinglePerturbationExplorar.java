@@ -1,9 +1,7 @@
 package services.interpolator;
 
-import services.engine.ILogger;
-import services.engine.IPerturbationEngine;
-import services.engine.IPerturbationPoint;
-import services.engine.ISpaceExplorer;
+import services.engine.*;
+import services.utils.SummariesCollector;
 
 import java.lang.management.MemoryUsage;
 import java.util.List;
@@ -17,6 +15,8 @@ public class SinglePerturbationExplorar implements ISpaceExplorer {
     public <Tin, Tout> void makeSpace(List<IPerturbationPoint> pbis, ICallback<Tin, Tout> callback, IPerturbationEngine engine, IAnswerChecker<Tout> checker, IExpectedProvider<Tin, Tout> provider, IInputProvider<Tin> inputProvider, ILogger logger) {
 
         Map<IPerturbationPoint, PbiSummary> summaries = new TreeMap<>();
+
+        int executionCounter = 0;
 
         while(inputProvider.canNext()){
 
@@ -32,6 +32,8 @@ public class SinglePerturbationExplorar implements ISpaceExplorer {
                 while(pbi.canPerturb(engine)){
 
                     pbi.next();
+
+                    executionCounter++;
 
                     try {
                         Tout result = callback._do(input);
@@ -52,6 +54,9 @@ public class SinglePerturbationExplorar implements ISpaceExplorer {
             }
         }
 
+        ISummariesCollector.WholeSummary summary = new SummariesCollector().getWholeSummary(summaries);
+
+        logger.logResult(summary);
     }
 
     @Override

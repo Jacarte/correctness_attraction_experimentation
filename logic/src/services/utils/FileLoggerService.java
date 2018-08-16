@@ -2,9 +2,12 @@ package services.utils;
 
 import services.engine.ILogger;
 import services.engine.IPerturbationPoint;
+import services.engine.ISpaceExplorer;
+import services.engine.ISummariesCollector;
 
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Map;
 
 public class FileLoggerService implements ILogger {
 
@@ -106,5 +109,15 @@ public class FileLoggerService implements ILogger {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void logResult(String fileName, Map<IPerturbationPoint, ISpaceExplorer.PbiSummary> summaries) {
+
+    }
+
+    @Override
+    public void logResult(ISummariesCollector.WholeSummary collector) {
+
     }
 }

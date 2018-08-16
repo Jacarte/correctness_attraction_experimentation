@@ -36,6 +36,8 @@ public interface ISpaceExplorer {
         boolean canNext();
 
         Tin getIn();
+
+        int getSize();
     }
 
     interface IManager<Tin, Tout> extends ICallback<Tin, Tout>, IExpectedProvider<Tin, Tout>, IAnswerChecker<Tout> {

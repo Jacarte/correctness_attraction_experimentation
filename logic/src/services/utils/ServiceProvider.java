@@ -101,7 +101,7 @@ public class ServiceProvider implements IServiceProvider {
 
     @Override
     public ILogger getLogger() {
-        if(logger == null) logger = new FileLoggerService();
+        if(logger == null) logger = new ConsoleLoggerService();
         return logger;
     }
 }
