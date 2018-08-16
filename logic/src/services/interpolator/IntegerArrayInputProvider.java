@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class IntegerArrayInputProvider implements ISpaceExplorer.IInputProvider<int[]> {
 
-    int count = 10000;
+    int count = 30000;
 
     public IntegerArrayInputProvider(){
 
