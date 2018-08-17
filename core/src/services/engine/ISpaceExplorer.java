@@ -38,6 +38,8 @@ public interface ISpaceExplorer {
         Tin getIn();
 
         int getSize();
+
+        Tin copy(Tin in);
     }
 
     interface IManager<Tin, Tout> extends ICallback<Tin, Tout>, IExpectedProvider<Tin, Tout>, IAnswerChecker<Tout> {

@@ -1,7 +1,9 @@
-package target;
+package target.maximum;
 
 import annotations.Ignore;
+import services.api.Translate;
 
+@Translate
 public class test {
 
     public static int getMaximum(int[] a){

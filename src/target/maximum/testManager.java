@@ -1,9 +1,7 @@
-package target;
-
+package target.maximum;
 import services.engine.ISpaceExplorer;
 
-public class testManager implements ISpaceExplorer.IManager<int[], Integer>
-{
+public class testManager implements ISpaceExplorer.IManager<int[], Integer> {
 
     @Override
     public Integer _do(int[] in) {

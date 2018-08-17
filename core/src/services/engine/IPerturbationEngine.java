@@ -22,4 +22,14 @@ public interface IPerturbationEngine {
 
         boolean isPBoolEnabled();
 
+        int getExecutionTimes(IPerturbationPoint pbi);
+
+        int getExecutionTimeout();
+
+        void watchThread(Thread t, OnInterruptCallback callback);
+
+        interface OnInterruptCallback{
+                void action();
+        }
+
 }

@@ -59,4 +59,46 @@ public class PerturbationEngine implements IPerturbationEngine {
         return false;
     }
 
+    @Override
+    public int getExecutionTimes(IPerturbationPoint pbi) {
+        return 150;
+    }
+
+    @Override
+    public int getExecutionTimeout() {
+        return 10000;
+    }
+
+    @Override
+    public void watchThread(Thread t, OnInterruptCallback callback) {
+        new Thread(){
+            @Override
+            public void run() {
+
+                long t0 = System.currentTimeMillis();
+
+                while(true){
+
+                    long delta = System.currentTimeMillis() - t0;
+
+                    if(delta > getExecutionTimeout()){
+                        if(t.isAlive()) {
+
+                            t.stop();
+                            break;
+                        }
+
+                    }
+
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }.start();
+    }
+
 }

@@ -6,11 +6,10 @@ import com.github.antlrjavaparser.api.expr.*;
 import com.github.antlrjavaparser.api.stmt.*;
 import com.github.antlrjavaparser.api.type.*;
 import com.github.antlrjavaparser.api.visitor.GenericVisitor;
-import services.policies.IPolicyFactory;
-import services.api.ITranslator;
 import services.utils.IServiceProvider;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class TransformationVisitor implements GenericVisitor<Type, Object> {
@@ -58,9 +57,19 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
     @Override
     public Type visit(ClassOrInterfaceDeclaration n, Object arg) {
 
+        AtomicBoolean translate = new AtomicBoolean(false);
+
+        n.getAnnotations().forEach(a -> {
+            translate.set(translate.get() || a.getName().getName().equals("Translate"));
+        });
+
+        if(!translate.get())
+            return null;
+
+        System.out.println("Processing: " + n.getName());
+
         methods.clear();
 
-        System.out.println("Entering in class declaration members for class: " + n.getName() );
         n.getMembers().forEach(m -> {
             m.accept(_serviceProvider.getVisitor(), arg);
         });
@@ -126,6 +135,9 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
 
     @Override
     public Type visit(MethodDeclaration n, Object arg) {
+
+        if((n.getModifiers() & ModifierSet.STATIC) == 0) // static method
+            return null;
 
         variables.clear();
 
