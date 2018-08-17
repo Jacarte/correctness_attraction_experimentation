@@ -5,6 +5,7 @@ import services.engine.IPerturbationPoint;
 import services.engine.ISpaceExplorer;
 import services.engine.ISummariesCollector;
 
+import java.text.DecimalFormat;
 import java.util.Map;
 
 public class ConsoleLoggerService implements ILogger {
@@ -33,19 +34,52 @@ public class ConsoleLoggerService implements ILogger {
 
     @Override
     public void logResult(ISummariesCollector.WholeSummary summary) {
-        System.out.println("Total success: " + summary.totalSuccess);
-        System.out.println("Correctness ratio: " + summary.correctnessRatio);
+        System.out.println(StaticUtils.padRight("Total success: ", 15) + StaticUtils.padLeft(summary.totalSuccess, 20));
+        System.out.println(StaticUtils.padRight("Correctness ratio: ", 20) + StaticUtils.padLeft(summary.correctnessRatio, 20));
 
-
-        System.out.println("=============================================");
+        System.out.println(
+                StaticUtils.padRight("index ", 8) +
+                StaticUtils.padRight("succ ", 8) +
+                StaticUtils.padRight("fail ", 8) +
+                StaticUtils.padRight("error ", 8) +
+                StaticUtils.padRight("ratio ", 8)
+                );
 
         for(IPerturbationPoint pbi: summary.proportions.keySet()){
 
             ISummariesCollector.PointSummary sum = summary.proportions.get(pbi);
 
+            DecimalFormat format = new DecimalFormat("#");
 
-            System.out.println(String.format("i:%s succ:%s fail:%s error:%s correct_ratio:%s",pbi.getIndex(), sum.correctCount, sum.brokenCount, sum.errorCount, sum.correctProportion ));
+            System.out.println(String.format("%s %s %s %s %s %s",
+                    StaticUtils.padRight(" " + pbi.getIndex(), 6),
+                    StaticUtils.padLeft(" " + sum.correctCount, 6),
+                    StaticUtils.padLeft(" " + sum.brokenCount, 6),
+                    StaticUtils.padLeft(" " + sum.errorCount, 6),
+                    StaticUtils.padRight("  " + format.format(sum.correctProportion * 100) + "% ", 10),
+                    printPercent(sum.correctProportion)
+                     ));
 
         }
+    }
+
+    String printPercent(double value){
+
+        double val = value;
+
+        int size = 100;
+
+        double fill = val*size;
+
+        String result = "";
+
+        for(int i= 0 ; i < size; i++){
+            if(i < fill)
+                result += "*";
+            else
+                result += ".";
+        }
+
+        return result;
     }
 }

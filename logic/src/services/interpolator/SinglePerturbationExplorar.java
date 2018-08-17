@@ -81,12 +81,6 @@ public class SinglePerturbationExplorar implements ISpaceExplorer {
                             summaries.get(pbi).errorCount++;
                             System.out.println("Finishing with..." + e.getMessage());
                         }
-
-
-                        ISummariesCollector.WholeSummary summary = new SummariesCollector().getWholeSummary(summaries);
-
-                        logger.logResult(summary);
-
                     }
                 }
 

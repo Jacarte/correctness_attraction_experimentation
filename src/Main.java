@@ -40,6 +40,7 @@ public class Main {
         QuickSortIntr.setupPerturbation();
 
         System.setErr(new PrintStream(new FileOutputStream("error.txt")));
+        // System.setOut(new PrintStream(new FileOutputStream("out.txt")));
 
         provider.getPerturbationEngine().makeSpace(new QuickSortManager(), new IntegerArrayInputProvider());
 
