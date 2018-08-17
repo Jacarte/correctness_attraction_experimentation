@@ -54,6 +54,8 @@ public interface ITranslator {
 
     void setFileName(String name);
 
+    void reset();
+
     List<InterestingPoint> getPbis();
 
 

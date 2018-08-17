@@ -8,6 +8,8 @@ import services.engine.ISummariesCollector;
 import java.text.DecimalFormat;
 import java.util.Map;
 
+import static services.utils.StaticUtils.printPercent;
+
 public class ConsoleLoggerService implements ILogger {
     @Override
     public void logResult(IPerturbationPoint pbi, boolean rightResult, Exception ex, long executionTime, long memoryWaste, long cpuWaste, Object expected, Object result) {
@@ -34,6 +36,7 @@ public class ConsoleLoggerService implements ILogger {
 
     @Override
     public void logResult(ISummariesCollector.WholeSummary summary) {
+        //System.out.print("\r");
         System.out.println(StaticUtils.padRight("Total success: ", 15) + StaticUtils.padLeft(summary.totalSuccess, 20));
         System.out.println(StaticUtils.padRight("Correctness ratio: ", 20) + StaticUtils.padLeft(summary.correctnessRatio, 20));
 
@@ -63,23 +66,4 @@ public class ConsoleLoggerService implements ILogger {
         }
     }
 
-    String printPercent(double value){
-
-        double val = value;
-
-        int size = 100;
-
-        double fill = val*size;
-
-        String result = "";
-
-        for(int i= 0 ; i < size; i++){
-            if(i < fill)
-                result += "*";
-            else
-                result += ".";
-        }
-
-        return result;
-    }
 }

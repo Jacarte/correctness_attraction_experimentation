@@ -23,4 +23,6 @@ public interface INamingService {
     String getInstrumentationSuffix();
 
     String engineName();
+
+    void reset();
 }

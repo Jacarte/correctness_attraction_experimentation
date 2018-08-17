@@ -31,6 +31,11 @@ public class NamingService implements INamingService {
     }
 
     @Override
+    public void reset() {
+        perturbationIndex = 0;
+    }
+
+    @Override
     public String getPBoolMethodName() {
         return engineName() + ".pBool";
     }

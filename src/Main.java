@@ -16,7 +16,8 @@ import services.utils.IServiceProvider;
 import services.utils.ServiceProvider;
 import services.utils.StaticUtils;
 import services.visitor.TransformationVisitor;
-import target.quicksort.QuickSortIntr;
+import target.maximum.testIntr;
+import target.maximum.testManager;
 import target.quicksort.QuickSortManager;
 //import target.testIntr;
 
@@ -32,26 +33,29 @@ public class Main {
 
         setup();
 
+
+        System.setErr(new PrintStream(new FileOutputStream("error.txt")));
         StaticUtils.serviceProvider = provider;
 
         //makeInstrumentation("./target");
 
 
-        QuickSortIntr.setupPerturbation();
+        /*QuickSortIntr.setupPerturbation();
 
-        System.setErr(new PrintStream(new FileOutputStream("error.txt")));
         // System.setOut(new PrintStream(new FileOutputStream("out.txt")));
 
+        provider.getPerturbationEngine().setFileName("QuickSort.java");
         provider.getPerturbationEngine().makeSpace(new QuickSortManager(), new IntegerArrayInputProvider());
 
 
+    */
 
-
-        /*testIntr.setupPerturbation();
+        testIntr.setupPerturbation();
 
         testManager manager = new testManager();
 
-        provider.getPerturbationEngine().makeSpace(manager, new IntegerArrayInputProvider());*/
+        provider.getPerturbationEngine().setFileName("Maximum.java");
+        provider.getPerturbationEngine().makeSpace(manager, new IntegerArrayInputProvider());
 
     }
 
@@ -71,6 +75,10 @@ public class Main {
         }, (level,parent, path, file) -> {
             CompilationUnit unit = null;
             try {
+                provider.getNamingService().reset();
+                provider.getPerturbationEngine().reset();
+                provider.getTranslator().reset();
+
                 unit = JavaParser.parse(new FileInputStream(path));
 
                 provider.getTranslator().setFileName(file.getName());

@@ -32,4 +32,10 @@ public interface IPerturbationEngine {
                 void action();
         }
 
+        String getFilename();
+
+        void setFileName(String value);
+
+        void reset();
+
 }

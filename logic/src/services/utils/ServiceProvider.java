@@ -104,4 +104,9 @@ public class ServiceProvider implements IServiceProvider {
         if(logger == null) logger = new ConsoleLoggerService();
         return logger;
     }
+
+    @Override
+    public IStatusLoggerService getLoggerService() {
+        return new StatusLoggerService();
+    }
 }

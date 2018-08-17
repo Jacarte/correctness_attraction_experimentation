@@ -101,4 +101,22 @@ public class PerturbationEngine implements IPerturbationEngine {
         }.start();
     }
 
+
+    String fileName;
+
+    @Override
+    public String getFilename() {
+        return fileName;
+    }
+
+    @Override
+    public void setFileName(String value) {
+        fileName = value;
+    }
+
+    @Override
+    public void reset() {
+        pbis.clear();
+    }
+
 }

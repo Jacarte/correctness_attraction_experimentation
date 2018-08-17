@@ -32,6 +32,11 @@ public class Translator implements ITranslator {
         this.fileName = name;
     }
 
+    @Override
+    public void reset() {
+        pBis.clear();
+    }
+
     List<InterestingPoint> pBis = new ArrayList<>();
 
     public Translator(INamingService namingService){

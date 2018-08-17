@@ -7,9 +7,10 @@ import java.util.Random;
 public class IntegerArrayInputProvider implements ISpaceExplorer.IInputProvider<int[]> {
 
     int count = 1000;
+    int size = 0;
 
     public IntegerArrayInputProvider(){
-
+        size = count;
     }
 
     @Override
@@ -25,7 +26,7 @@ public class IntegerArrayInputProvider implements ISpaceExplorer.IInputProvider<
 
     @Override
     public int getSize() {
-        return count;
+        return size;
     }
 
     @Override
@@ -40,7 +41,7 @@ public class IntegerArrayInputProvider implements ISpaceExplorer.IInputProvider<
     }
 
     int[] createRandomArray(){
-        int size = new Random().nextInt(2000) + 1;
+        int size = new Random().nextInt(3000) + 1;
 
         int[] result = new int[size];
 

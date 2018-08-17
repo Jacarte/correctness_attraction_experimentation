@@ -2,6 +2,7 @@ package services.interpolator;
 
 import jdk.nashorn.internal.codegen.CompilerConstants;
 import services.engine.*;
+import services.utils.StaticUtils;
 import services.utils.SummariesCollector;
 
 import java.lang.management.MemoryUsage;
@@ -22,10 +23,13 @@ public class SinglePerturbationExplorar implements ISpaceExplorer {
         Map<IPerturbationPoint, PbiSummary> summaries = new TreeMap<>();
 
         int executionCounter = 0;
+        int total = pbis.size()*engine.getExecutionTimes(pbis.get(0)) * inputProvider.getSize();
 
         ExecutorService executor = Executors.newFixedThreadPool(1);
         CompletionService<Tout> service
                 = new ExecutorCompletionService<>(executor);
+
+        StaticUtils.serviceProvider.getLoggerService().reportHeader(engine.getFilename());
 
         while(inputProvider.canNext()){
 
@@ -45,23 +49,25 @@ public class SinglePerturbationExplorar implements ISpaceExplorer {
                         pbi.next();
 
 
-                        executionCounter++;
-
                         Callable<Tout> callable = () -> {
                             return callback._do(inputProvider.copy(input));
                         };
 
                         try {
 
-                            System.out.println("Executing...");
+                            executionCounter++;
+
+                            StaticUtils.serviceProvider.getLoggerService().reportStatus("Perturbing",
+                                    ((double)executionCounter/total),  String.format("%s/%s", executionCounter, total) + " Executing..."
+                                    + pbi.getName()
+                                    + " "
+                                    + pbi.getIndex());
 
                             service.submit(callable);
 
                             Future<Tout> future = service.poll(engine.getExecutionTimeout(), TimeUnit.MILLISECONDS);
 
                             Tout result = future.get();
-
-                            System.out.println("Finishing...");
 
                             if (checker._do(expected, result))
                                 summaries.get(pbi).successCount++;
@@ -71,20 +77,23 @@ public class SinglePerturbationExplorar implements ISpaceExplorer {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                             summaries.get(pbi).errorCount++;
-                            System.out.println("Finishing with..." + e.getMessage());
+                            StaticUtils.serviceProvider.getLoggerService().reportStatus("Perturbing", ((double)executionCounter/total), "Finishing with..." + e.getMessage());
+
+                            //System.out.println();
                         } catch (ExecutionException e) {
                             e.printStackTrace();
                             summaries.get(pbi).errorCount++;
-                            System.out.println("Finishing with..." + e.getMessage());
+                            StaticUtils.serviceProvider.getLoggerService().reportStatus("Perturbing", ((double)executionCounter/total), "Finishing with..." + e.getMessage());
                         } catch (Exception e) {
                             e.printStackTrace();
                             summaries.get(pbi).errorCount++;
-                            System.out.println("Finishing with..." + e.getMessage());
+                            StaticUtils.serviceProvider.getLoggerService().reportStatus("Perturbing", ((double)executionCounter/total), "Finishing with...timeout");
                         }
                     }
+
+                    pbi.reset();
                 }
 
-                pbi.reset();
             }
 
         }

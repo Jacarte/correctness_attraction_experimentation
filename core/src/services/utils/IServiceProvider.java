@@ -31,4 +31,6 @@ public interface IServiceProvider {
 
     ILogger getLogger();
 
+    IStatusLoggerService getLoggerService();
+
 }
