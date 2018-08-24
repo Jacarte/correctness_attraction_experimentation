@@ -2,6 +2,7 @@ package services.engine;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public interface IPerturbationEngine {
 
@@ -22,8 +23,6 @@ public interface IPerturbationEngine {
 
         boolean isPBoolEnabled();
 
-        int getExecutionTimes(IPerturbationPoint pbi);
-
         int getExecutionTimeout();
 
         void watchThread(Thread t, OnInterruptCallback callback);
@@ -37,5 +36,10 @@ public interface IPerturbationEngine {
         void setFileName(String value);
 
         void reset();
+
+        void resetAccessCount();
+
+        Map<IPerturbationPoint, Integer> getAccessCount();
+
 
 }

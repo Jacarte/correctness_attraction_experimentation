@@ -1,16 +1,20 @@
 package services.interpolator;
 
 import services.engine.ISpaceExplorer;
+import services.utils.CommandLineParser;
 
 import java.util.Random;
 
 public class IntegerArrayInputProvider implements ISpaceExplorer.IInputProvider<int[]> {
 
-    int count = 1000;
-    int size = 0;
+    int count;
+    int size;
+
 
     public IntegerArrayInputProvider(){
-        size = count;
+
+        size = Integer.parseInt(CommandLineParser.CONFIG.get("size"));
+        count = size;
     }
 
     @Override
@@ -41,12 +45,14 @@ public class IntegerArrayInputProvider implements ISpaceExplorer.IInputProvider<
     }
 
     int[] createRandomArray(){
-        int size = new Random().nextInt(3000) + 1;
+        Random r = new Random(0);
+
+        int size = r.nextInt(200) + 1;
 
         int[] result = new int[size];
 
         for(int i = 0; i < result.length; i++){
-            result[i] = new Random().nextInt(400000);
+            result[i] = (int)(r.nextLong() - Integer.MAX_VALUE);
         }
 
         return result;

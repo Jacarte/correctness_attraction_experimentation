@@ -17,6 +17,7 @@ public interface ISpaceExplorer {
                                IInputProvider<Tin> inputProvider,
                                ILogger logger);
 
+    <Tin, Tout> Tout executePerturbation(IPerturbationPoint pbi, IPerturbationModel model, ICallback<Tin, Tout> callback, Tin input, int time);
 
 
     interface ICallback<Tin, Tout>{
@@ -28,6 +29,10 @@ public interface ISpaceExplorer {
     }
 
     interface IExpectedProvider<Tin, Tout>{
+        Tout get(Tin in);
+    }
+
+    interface IRegisterAccessCounter<Tin, Tout>{
         Tout get(Tin in);
     }
 
@@ -45,6 +50,8 @@ public interface ISpaceExplorer {
     interface IManager<Tin, Tout> extends ICallback<Tin, Tout>, IExpectedProvider<Tin, Tout>, IAnswerChecker<Tout> {
 
     }
+
+
 
     class PbiSummary{
         public int errorCount;

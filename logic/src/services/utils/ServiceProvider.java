@@ -2,14 +2,13 @@ package services.utils;
 
 import com.github.antlrjavaparser.api.type.Type;
 import com.github.antlrjavaparser.api.visitor.GenericVisitor;
+import experiment.PBoolModel;
+import experiment.POneModel;
 import services.PerturbationEngine;
 import services.Translator;
 import services.api.INamingService;
 import services.api.ITranslator;
-import services.engine.ILogger;
-import services.engine.IPerturbationEngine;
-import services.engine.NamingService;
-import services.engine.PolicyFactory;
+import services.engine.*;
 import services.interpolator.*;
 import services.policies.IPolicyFactory;
 import services.visitor.TransformationVisitor;
@@ -67,20 +66,6 @@ public class ServiceProvider implements IServiceProvider {
 
     }
 
-    IntegerInterpolator iInterpolator;
-
-    @Override
-    public IntegerInterpolator getIntegerInterpolator() {
-
-        return new POneInterpolator();
-    }
-
-
-    @Override
-    public IBooleanInterpolator getBooleanInterpolator() {
-        return new BooleanInterpolator();
-    }
-
     @Override
     public IPolicyFactory getPolicyFactory() {
         return new PolicyFactory();
@@ -108,5 +93,32 @@ public class ServiceProvider implements IServiceProvider {
     @Override
     public IStatusLoggerService getLoggerService() {
         return new StatusLoggerService();
+    }
+
+    @Override
+    public IPerturbationModel getModel() {
+
+        String type = CommandLineParser.CONFIG.get("type");
+
+        switch (type){
+            case "pbool":
+                return new PBoolModel();
+            case "pone":
+                return new POneModel();
+        }
+
+        return null;
+    }
+
+    static ExectionPolicy policy;
+
+    @Override
+    public ExectionPolicy getExecutionPolicy() {
+        return policy;
+    }
+
+    @Override
+    public void setExecutionPolicy(ExectionPolicy policy) {
+        ServiceProvider.policy = policy;
     }
 }

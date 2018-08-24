@@ -1,62 +1,29 @@
+package entrypoint;
+
 import com.github.antlrjavaparser.JavaParser;
-import com.github.antlrjavaparser.api.*;
-import services.Translator;
-import services.api.INamingService;
-import services.api.ITranslator;
-import services.engine.ISpaceExplorer;
-import services.engine.PolicyFactory;
-import services.engine.NamingService;
-import services.interpolator.IntegerArrayInputProvider;
-import services.test.IService1;
-import services.test.IService2;
-import services.test.Service1;
-import services.test.Service2;
+import com.github.antlrjavaparser.api.CompilationUnit;
 import services.utils.DirExplorer;
 import services.utils.IServiceProvider;
 import services.utils.ServiceProvider;
 import services.utils.StaticUtils;
-import services.visitor.TransformationVisitor;
-import target.maximum.testIntr;
-import target.maximum.testManager;
-import target.quicksort.QuickSortManager;
-//import target.testIntr;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 
-public class Main {
+public class Instrumentation {
 
-
+    static String[] args;
 
     public static void main(String[] args) throws IOException, IllegalAccessException, InstantiationException, InvocationTargetException, InterruptedException {
 
 
         setup();
 
+        Instrumentation.args = args;
 
-        System.setErr(new PrintStream(new FileOutputStream("error.txt")));
         StaticUtils.serviceProvider = provider;
 
-        //makeInstrumentation("./target");
-
-
-        /*QuickSortIntr.setupPerturbation();
-
-        // System.setOut(new PrintStream(new FileOutputStream("out.txt")));
-
-        provider.getPerturbationEngine().setFileName("QuickSort.java");
-        provider.getPerturbationEngine().makeSpace(new QuickSortManager(), new IntegerArrayInputProvider());
-
-
-    */
-
-        testIntr.setupPerturbation();
-
-        testManager manager = new testManager();
-
-        provider.getPerturbationEngine().setFileName("Maximum.java");
-        provider.getPerturbationEngine().makeSpace(manager, new IntegerArrayInputProvider());
-
+        makeInstrumentation();
     }
 
     static IServiceProvider provider;
@@ -64,7 +31,11 @@ public class Main {
     public static void setup(){
 
         provider = new ServiceProvider();
+    }
 
+    public static void makeInstrumentation(){
+        String path = args[1];
+        makeInstrumentation(path);
     }
 
 
@@ -99,3 +70,4 @@ public class Main {
         }).explore(new File(dirName));
     }
 }
+

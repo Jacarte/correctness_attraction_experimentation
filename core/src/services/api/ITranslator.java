@@ -6,8 +6,6 @@ import com.github.antlrjavaparser.api.body.VariableDeclarator;
 import com.github.antlrjavaparser.api.expr.*;
 import com.github.antlrjavaparser.api.stmt.*;
 import com.github.antlrjavaparser.api.type.*;
-import sun.tools.tree.ForStatement;
-import sun.tools.tree.SwitchStatement;
 
 import java.util.List;
 

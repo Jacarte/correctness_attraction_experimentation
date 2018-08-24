@@ -1,20 +1,24 @@
 package services;
 
-import pbi.BooleanPerturbationPoint;
-import pbi.IntegerPerturbationPoint;
-import pbi.PerturbationPoint;
 import services.engine.*;
-import services.interpolator.IntegerArrayInputProvider;
-import services.interpolator.SinglePerturbationExplorar;
+import services.interpolator.SinglePerturbationExplorer;
+import services.utils.CommandLineParser;
+import services.utils.IServiceProvider;
 import services.utils.ServiceProvider;
+import services.utils.StaticUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class PerturbationEngine implements IPerturbationEngine {
 
 
     List<IPerturbationPoint> pbis = new ArrayList<>();
+
+    Map<IPerturbationPoint, Integer> accessCount = new TreeMap<>();
+
+    Random r = new Random(0);
+
+
 
     @Override
     public void makeSpace(ISpaceExplorer.ICallback callback, ISpaceExplorer.IAnswerChecker checker, ISpaceExplorer.IExpectedProvider provider, ISpaceExplorer.IInputProvider inputProvider) {
@@ -29,15 +33,30 @@ public class PerturbationEngine implements IPerturbationEngine {
 
     @Override
     public ISpaceExplorer getExplorer() {
-        return new SinglePerturbationExplorar();
+        return new SinglePerturbationExplorer();
     }
 
     public int pInt(IIntegerPerturbationPoint pbi, int value){
 
+        registerAccess(pbi);
+
         return pbi.getValue(value);
     }
 
+
+    private void registerAccess(IPerturbationPoint pbi){
+
+        if(StaticUtils.serviceProvider.getExecutionPolicy() == IServiceProvider.ExectionPolicy.REGISTER_ACCESS)
+            if(accessCount.containsKey(pbi))
+                accessCount.put(pbi, accessCount.get(pbi) + 1);
+            else
+                accessCount.put(pbi, 1);
+
+    }
+
     public boolean pBool(IBooleanPerturbationPoint pbi, boolean value){
+
+        registerAccess(pbi);
 
         boolean val = pbi.getValue(value);
 
@@ -60,45 +79,13 @@ public class PerturbationEngine implements IPerturbationEngine {
     }
 
     @Override
-    public int getExecutionTimes(IPerturbationPoint pbi) {
-        return 150;
-    }
-
-    @Override
     public int getExecutionTimeout() {
-        return 10000;
+        return Integer.parseInt(CommandLineParser.CONFIG.get("time"));
     }
 
     @Override
     public void watchThread(Thread t, OnInterruptCallback callback) {
-        new Thread(){
-            @Override
-            public void run() {
 
-                long t0 = System.currentTimeMillis();
-
-                while(true){
-
-                    long delta = System.currentTimeMillis() - t0;
-
-                    if(delta > getExecutionTimeout()){
-                        if(t.isAlive()) {
-
-                            t.stop();
-                            break;
-                        }
-
-                    }
-
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        }.start();
     }
 
 
@@ -117,6 +104,16 @@ public class PerturbationEngine implements IPerturbationEngine {
     @Override
     public void reset() {
         pbis.clear();
+    }
+
+    @Override
+    public void resetAccessCount() {
+        accessCount.clear();
+    }
+
+    @Override
+    public Map<IPerturbationPoint, Integer> getAccessCount() {
+        return accessCount;
     }
 
 }

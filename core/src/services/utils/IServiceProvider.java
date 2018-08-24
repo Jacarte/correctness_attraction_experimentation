@@ -5,6 +5,7 @@ import services.api.INamingService;
 import services.api.ITranslator;
 import services.engine.ILogger;
 import services.engine.IPerturbationEngine;
+import services.engine.IPerturbationModel;
 import services.interpolator.IBooleanInterpolator;
 import services.interpolator.IntegerInterpolator;
 import services.interpolator.Interpolator;
@@ -21,10 +22,6 @@ public interface IServiceProvider {
 
     GenericVisitor<Type, Object> getVisitor();
 
-    IntegerInterpolator getIntegerInterpolator();
-
-    IBooleanInterpolator getBooleanInterpolator();
-
     IPolicyFactory getPolicyFactory();
 
     IPerturbationEngine getPerturbationEngine();
@@ -33,4 +30,14 @@ public interface IServiceProvider {
 
     IStatusLoggerService getLoggerService();
 
+    IPerturbationModel getModel();
+
+    ExectionPolicy getExecutionPolicy();
+
+    void setExecutionPolicy(ExectionPolicy policy);
+
+    enum ExectionPolicy{
+        REGISTER_ACCESS,
+        PERTURBING
+    }
 }

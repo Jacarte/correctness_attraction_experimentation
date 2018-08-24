@@ -68,7 +68,7 @@ public class FileLoggerService implements ILogger {
 
 
         message.append("Perturbed in value: ");
-        message.append(pbi.getPerturbationValue());
+        //message.append(pbi.getPerturbationValue());
         message.append("\n");
 
 

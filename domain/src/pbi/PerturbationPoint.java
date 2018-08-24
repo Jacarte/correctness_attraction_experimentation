@@ -1,5 +1,6 @@
 package pbi;
 
+import services.engine.IPerturbationModel;
 import services.engine.IPerturbationPoint;
 import services.utils.IServiceProvider;
 
@@ -10,6 +11,9 @@ public abstract class PerturbationPoint implements IPerturbationPoint {
 
     protected IServiceProvider _serviceProvider;
     protected String originalExpression;
+
+    protected int currentTime = 0;
+    protected int perturbAt = -2;
 
     public PerturbationPoint(String location, int index, String originalExpression, IServiceProvider provider){
         _serviceProvider = provider;
@@ -62,5 +66,20 @@ public abstract class PerturbationPoint implements IPerturbationPoint {
     @Override
     public String toString() {
         return getName();
+    }
+
+    @Override
+    public void setTime(int time) {
+        this.currentTime = time;
+    }
+
+    @Override
+    public int getCurrentTime() {
+        return currentTime;
+    }
+
+    @Override
+    public void reset() {
+        currentTime = 0;
     }
 }

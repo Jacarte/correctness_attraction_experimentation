@@ -10,5 +10,6 @@
     <orderEntry type="module" module-name="domain" />
     <orderEntry type="module" module-name="core" />
     <orderEntry type="library" name="com.github.antlrjavaparser:antlr-java-parser:1.0.17" level="project" />
+    <orderEntry type="library" name="com.google.inject:guice:1.0" level="project" />
   </component>
 </module>

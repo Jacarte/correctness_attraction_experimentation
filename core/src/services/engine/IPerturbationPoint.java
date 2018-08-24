@@ -4,23 +4,23 @@ import services.interpolator.Interpolator;
 
 public interface IPerturbationPoint extends Comparable<IPerturbationPoint> {
 
-    void reset();
-
-    boolean canPerturb(IPerturbationEngine engine);
-
     String getName();
 
     int getLine();
 
     int getCol();
 
-    void next();
-
-    Object getPerturbationValue();
-
-    Interpolator getInterpolator();
-
     int getIndex();
 
     String getOriginalExpression();
+
+    void perturb(IPerturbationModel model, int time);
+
+    void reset(IPerturbationModel model);
+
+    void setTime(int time);
+
+    int getCurrentTime();
+
+    void reset();
 }
