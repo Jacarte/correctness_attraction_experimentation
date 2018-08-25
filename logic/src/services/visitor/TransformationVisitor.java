@@ -59,6 +59,7 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
 
         AtomicBoolean translate = new AtomicBoolean(false);
 
+
         n.getAnnotations().forEach(a -> {
             translate.set(translate.get() || a.getName().getName().equals("Translate"));
         });
@@ -110,40 +111,49 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
     @Override
     public Type visit(FieldDeclaration n, Object arg) { // The fields declaration out of method body must not be pertubated
 
+
+        n.getVariables().forEach(v -> {
+            variables.put(v.getId().getName(), n.getType());
+        });
+
         return null;
     }
 
     @Override
     public Type visit(VariableDeclarator n, Object arg) {
 
-        if(n.getInit() != null)
+        // System.out.println(n.getInit().toString());
+        n.getId().accept(_serviceProvider.getVisitor(), arg);
+
+        if(n.getInit() != null) {
             n.getInit().accept(_serviceProvider.getVisitor(), arg);
 
+            _serviceProvider.getTranslator().translate(n, variables.get(n.getId().getName()));
+        }
         return null;
     }
 
     @Override
     public Type visit(VariableDeclaratorId n, Object arg) {
 
+
         return null;
     }
 
     @Override
     public Type visit(ConstructorDeclaration n, Object arg) {
+        if(n!=null)
+            n.setName(n.getName() + _serviceProvider.getNamingService().getInstrumentationSuffix());
         return null;
     }
 
     @Override
     public Type visit(MethodDeclaration n, Object arg) {
 
-        if((n.getModifiers() & ModifierSet.STATIC) == 0) // static method
-            return null;
-
-        variables.clear();
-
-        n.getParameters().forEach(p -> {
-            p.accept(_serviceProvider.getVisitor(), arg);
-        });
+        if(n.getParameters() != null)
+            n.getParameters().forEach(p -> {
+                p.accept(_serviceProvider.getVisitor(), arg);
+            });
 
         methods.put(n.getName(), n.getType());
         lastMethodName = n.getName();
@@ -152,8 +162,6 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
 
             n.getBody().accept(_serviceProvider.getVisitor(), arg);
         }
-
-        variables.clear();
 
         return null;
     }
@@ -183,6 +191,7 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
 
     @Override
     public Type visit(InitializerDeclaration n, Object arg) {
+
         return null;
     }
 
@@ -216,15 +225,14 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
 
         n.getIndex().accept(_serviceProvider.getVisitor(), arg);
 
+        Type t = n.getName().accept(_serviceProvider.getVisitor(), arg);
+
         _serviceProvider.getTranslator().translate(n, new PrimitiveType(PrimitiveType.Primitive.Int));
 
-        if(variables.containsKey(n.getName().toString())){
-            Type t = variables.get(n.getName().toString());
 
-            if(t instanceof ReferenceType){
-                if(((ReferenceType)t).getArrayCount() > 0)
-                    return ((ReferenceType)t).getType();
-            }
+        if(t instanceof ReferenceType){
+            if(((ReferenceType)t).getArrayCount() > 0)
+                return ((ReferenceType)t).getType();
         }
 
         return null;
@@ -237,14 +245,18 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
             d.accept(_serviceProvider.getVisitor(), arg);
         });
 
-        return n.getType();
+        _serviceProvider.getTranslator().translate(n);
+        return null;
     }
 
     @Override
     public Type visit(ArrayInitializerExpr n, Object arg) {
 
+
+
         n.getValues().forEach(e -> {
             e.accept(_serviceProvider.getVisitor(), arg);
+            _serviceProvider.getTranslator().translate(n);
         });
 
         return null;
@@ -253,8 +265,8 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
     @Override
     public Type visit(AssignExpr n, Object arg) {
 
-        Type t = n.getTarget().accept(_serviceProvider.getVisitor(), arg);
-        n.getValue().accept(_serviceProvider.getVisitor(), arg);
+        n.getTarget().accept(_serviceProvider.getVisitor(), arg);
+        Type t = n.getValue().accept(_serviceProvider.getVisitor(), arg);
 
         _serviceProvider.getTranslator().translate(n, t);
 
@@ -300,6 +312,8 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
 
         Type t = n.getInner().accept(_serviceProvider.getVisitor(), arg);
 
+        // System.out.println(n.toString());
+
         _serviceProvider.getTranslator().translate(n, t);
 
         return t;
@@ -308,8 +322,14 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
     @Override
     public Type visit(FieldAccessExpr n, Object arg) {
 
-        return null;
+        Type t = variables.get(n.getField());
 
+        /*if(t instanceof ReferenceType){
+            if(((ReferenceType)t).getArrayCount() > 0)
+                return ((ReferenceType)t).getType();
+        }*/
+
+        return t;
     }
 
     @Override
@@ -393,8 +413,10 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
     @Override
     public Type visit(NameExpr n, Object arg) {
 
+
         if(variables.containsKey(n.getName()))
             return variables.get(n.getName());
+
         return null;
     }
 
@@ -427,24 +449,31 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
 
         _serviceProvider.getTranslator().translate(n, n.getExpr().accept(_serviceProvider.getVisitor(), arg));
 
+        return getTypeFromUnaryOperator(n);
+    }
+
+    Type getTypeFromUnaryOperator(UnaryExpr n){
+
+        UnaryExpr.Operator op = n.getOperator();
+        if(op == UnaryExpr.Operator.not)
+            return new PrimitiveType(PrimitiveType.Primitive.Boolean);
+
         return new PrimitiveType(PrimitiveType.Primitive.Int);
     }
 
     @Override
     public Type visit(VariableDeclarationExpr n, Object arg) {
 
-        if(_serviceProvider.getPolicyFactory().getPolicy(n).check(n)) {
+        // System.out.println(n.toString());
 
+        n.getVars().forEach(v -> {
+            variables.put(v.getId().getName(), n.getType());
 
-            n.getVars().forEach(v -> {
-                v.accept(_serviceProvider.getVisitor(), arg);
-                variables.put(v.getId().getName(), n.getType());
+            v.accept(_serviceProvider.getVisitor(), arg);
 
-                _serviceProvider.getTranslator().translate(v, n.getType());
-            });
+            _serviceProvider.getTranslator().translate(v, n.getType());
+        });
 
-
-        }
         return null;
     }
 
@@ -576,6 +605,7 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
     @Override
     public Type visit(ReturnStmt n, Object arg) {
         Type t =  n.getExpr().accept(_serviceProvider.getVisitor(), arg);
+
 
         _serviceProvider.getTranslator().translate(n, t);
 

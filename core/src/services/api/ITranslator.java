@@ -45,6 +45,10 @@ public interface ITranslator {
 
     void translate(CompilationUnit unit);
 
+    void translate(ArrayCreationExpr array);
+
+    void translate(ArrayInitializerExpr array);
+
     Expression getScope();
 
     void setScope(Expression scope);

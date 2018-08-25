@@ -121,4 +121,9 @@ public class ServiceProvider implements IServiceProvider {
     public void setExecutionPolicy(ExectionPolicy policy) {
         ServiceProvider.policy = policy;
     }
+
+    @Override
+    public void resetVisitor() {
+        visitor = new TransformationVisitor(this);
+    }
 }

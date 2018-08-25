@@ -36,6 +36,8 @@ public interface IServiceProvider {
 
     void setExecutionPolicy(ExectionPolicy policy);
 
+    void resetVisitor();
+
     enum ExectionPolicy{
         REGISTER_ACCESS,
         PERTURBING

@@ -6,8 +6,6 @@ cp=/Library/Java/JavaVirtualMachines/jdk1.8.0_152.jdk/Contents/Home/jre/lib/char
 
 find .. -name "*.java" ! -wholename "*/target/*" ! -name "Main.java" > source.txt
 
- cat source.txt
-
 mkdir bin
 javac -cp $cp @source.txt -d bin
 

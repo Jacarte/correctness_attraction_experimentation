@@ -5,10 +5,7 @@ import com.github.antlrjavaparser.api.ImportDeclaration;
 import com.github.antlrjavaparser.api.body.*;
 import com.github.antlrjavaparser.api.expr.*;
 import com.github.antlrjavaparser.api.stmt.*;
-import com.github.antlrjavaparser.api.type.ClassOrInterfaceType;
-import com.github.antlrjavaparser.api.type.PrimitiveType;
-import com.github.antlrjavaparser.api.type.Type;
-import com.github.antlrjavaparser.api.type.VoidType;
+import com.github.antlrjavaparser.api.type.*;
 import services.api.INamingService;
 import services.api.ITranslator;
 
@@ -50,9 +47,7 @@ public class Translator implements ITranslator {
 
     @Override
     public void translate(VariableDeclarator node, Type target) {
-
         node.setInit(translateExpression(node.getInit(), target));
-
     }
 
     @Override
@@ -193,11 +188,13 @@ public class Translator implements ITranslator {
 
     @Override
     public void translate(ArrayAccessExpr expr, Type t) {
-        expr.setIndex(translateExpression(expr.getIndex(), t));
+        expr.setIndex(translateExpression(expr.getIndex(), Translator.intType));
+
     }
 
     @Override
     public void translate(EnclosedExpr expr, Type t) {
+
         expr.setInner(translateExpression(expr.getInner(), t));
     }
 
@@ -244,6 +241,23 @@ public class Translator implements ITranslator {
         _namingService.getPerturbationNamespace().forEach(name -> {
             unit.getImports().add(new ImportDeclaration(new NameExpr(name), false, true));
         });
+
+    }
+
+    @Override
+    public void translate(ArrayCreationExpr array) {
+        List<Expression> ex = new ArrayList<>();
+
+        for(int i = 0; i < array.getDimensions().size(); i++)
+            ex.add(translateExpression(array.getDimensions().get(i), Translator.intType));
+
+        array.setDimensions(new ArrayList<>());
+
+        array.setDimensions(ex);
+    }
+
+    @Override
+    public void translate(ArrayInitializerExpr array) {
 
     }
 

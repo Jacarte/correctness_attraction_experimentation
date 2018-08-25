@@ -6,9 +6,12 @@ import services.api.Translate;
 @Translate
 public class test {
 
+    int min = -1;
+
     public static int getMaximum(int[] a){
 
-        int result = a[0];
+
+        int result = new test().min;
 
 
         for(int i = 0; i < a.length; i++)

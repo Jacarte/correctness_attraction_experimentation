@@ -42,10 +42,16 @@ public class Instrumentation {
     public static void makeInstrumentation(String dirName){
         new DirExplorer((level, path, file) -> {
             return path.endsWith(".java") &&
-                    !path.endsWith(provider.getNamingService().getInstrumentationSuffix() + ".java");
+                    !path.endsWith(provider.getNamingService().getInstrumentationSuffix() + ".java")
+                    &&
+                    !path.endsWith("Manager.java");
         }, (level,parent, path, file) -> {
             CompilationUnit unit = null;
             try {
+
+                System.out.println("Processing..." + file.getName());
+
+                provider.resetVisitor();
                 provider.getNamingService().reset();
                 provider.getPerturbationEngine().reset();
                 provider.getTranslator().reset();
