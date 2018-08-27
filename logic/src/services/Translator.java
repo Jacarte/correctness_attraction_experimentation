@@ -78,6 +78,12 @@ public class Translator implements ITranslator {
 
         if(t == null)
             return base;
+        if(base instanceof MethodCallExpr){
+            String name = ((MethodCallExpr)base).getName();
+
+            if(name.equals(_namingService.getPBoolMethodName()) || name.equals(_namingService.getPIntMethodName()))
+                return base;
+        }
 
 
         InterestingPoint pbi = new InterestingPoint();
