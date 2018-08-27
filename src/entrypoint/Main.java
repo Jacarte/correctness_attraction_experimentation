@@ -6,8 +6,12 @@ import services.interpolator.IntegerArrayInputProvider;
 import services.utils.*;
 import target.maximum.testIntr;
 import target.maximum.testManager;
+import target.md5.MD5Intr;
+import target.md5.MD5Manager;
 import target.quicksort.QuickSortIntr;
 import target.quicksort.QuickSortManager;
+import target.sudoku.SudokuIntr;
+import target.sudoku.SudokuManager;
 //import target.testIntr;
 
 import java.io.*;
@@ -58,8 +62,6 @@ public class Main {
         new CommandLineParser().run(1, args);
 
 
-        String target = CommandLineParser.CONFIG.get("target");
-
         switch (target){
             case "qs": // Quick sort
                 QuickSortIntr.setupPerturbation();
@@ -72,7 +74,17 @@ public class Main {
                 provider.getPerturbationEngine().setFileName("Maximum.java");
                 provider.getPerturbationEngine().makeSpace(new testManager(), new IntegerArrayInputProvider());
                 break;
-        }
+            case "su":
+
+                SudokuIntr.setupPerturbation();
+                provider.getPerturbationEngine().setFileName("Sudoku.java");
+                provider.getPerturbationEngine().makeSpace(new SudokuManager(), new SudokuInputProvider(CommandLineParser.CONFIG.get("grid")));
+                break;
+            case "md5":
+                MD5Intr.setupPerturbation();
+                provider.getPerturbationEngine().setFileName("MD5.java");
+                provider.getPerturbationEngine().makeSpace(new MD5Manager(), new ByteArrayInputProvider());
+                break;
 
 
     }
