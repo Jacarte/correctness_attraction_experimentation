@@ -59,6 +59,18 @@ public class ConsoleLoggerService implements ILogger {
                      ));
 
         }
+
+        System.out.println("");
+        System.out.print("[");
+
+        for(IPerturbationPoint pbi: summary.proportions.keySet()){
+
+            ISummariesCollector.PointSummary sum = summary.proportions.get(pbi);
+
+            System.out.print(String.format("%s,", sum.correctProportion));
+            }
+        System.out.println("]");
+
     }
 
 }

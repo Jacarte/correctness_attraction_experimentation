@@ -47,7 +47,7 @@ public class IntegerArrayInputProvider implements ISpaceExplorer.IInputProvider<
     int[] createRandomArray(){
         Random r = new Random(0);
 
-        int size = r.nextInt(200) + 1;
+        int size = 100;
 
         int[] result = new int[size];
 

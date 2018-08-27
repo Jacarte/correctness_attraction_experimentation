@@ -50,12 +50,18 @@ public class SinglePerturbationExplorer implements ISpaceExplorer {
 
             for(IPerturbationPoint pbi: pbis){
 
+
                 if(!summaries.containsKey(pbi))
                     summaries.put(pbi, new PbiSummary());
+
+                if(!accessCount.containsKey(pbi))
+                    continue;;
 
                 total += accessCount.get(pbi);
 
                 for(int i = 0; i < accessCount.get(pbi); i++) {
+
+                    pbi.setTime(0);
 
                     int finalI = i;
 
@@ -80,7 +86,7 @@ public class SinglePerturbationExplorer implements ISpaceExplorer {
 
                             time = System.currentTimeMillis() - time;
 
-                            StaticUtils.serviceProvider.getLoggerService().reportStatus("Perturbing",
+                            /*StaticUtils.serviceProvider.getLoggerService().reportStatus("Perturbing",
                                     ((double)executionCounter/total),  String.format("%s/%s", executionCounter, total)
                                             + " ratio: " + summary.correctnessRatio + " Execution "
                                             + pbi.getName()
@@ -88,7 +94,7 @@ public class SinglePerturbationExplorer implements ISpaceExplorer {
                                             + pbi.getIndex()
                                             + " "
                                             + time
-                                            + " ms");
+                                            + " ms");*/
 
 
                             if (checker._do(expected, result))

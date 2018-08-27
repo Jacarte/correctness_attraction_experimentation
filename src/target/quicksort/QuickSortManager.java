@@ -66,7 +66,7 @@ public class QuickSortManager implements ISpaceExplorer.IManager<int[], int[]> {
     }
 
     @Override
-    public boolean _do(int[] output, int[] input) {
+    public boolean _do(int[] input, int[] output) {
         int cpt = 1;
         if (!contains(input, output[0]) || input.length != output.length) return false;
         for (int i = 1; i < output.length; i++) {
