@@ -24,7 +24,7 @@ public class SudokuManager implements ISpaceExplorer.IManager<int[][], int[][]> 
     }
 
     @Override
-    public boolean _do(int[][] output, int[][] input) {
+    public boolean _do(int[][] input, int[][] output) {
         for (int row = 0; row < output.length; row++) {
             List<Integer> listOfInteger = buildListOf9Integer();
             for (int col = 0; col < output[row].length; col++) {

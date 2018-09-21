@@ -8,7 +8,7 @@ public interface IPerturbationEngine {
 
         void makeSpace(ISpaceExplorer.ICallback callback, ISpaceExplorer.IAnswerChecker checker, ISpaceExplorer.IExpectedProvider provider, ISpaceExplorer.IInputProvider inputProvider);
 
-        void makeSpace(ISpaceExplorer.IManager manager, ISpaceExplorer.IInputProvider inputProvider);
+        <Tin, Tout> void makeSpace(ISpaceExplorer.IManager<Tin, Tout> manager, ISpaceExplorer.IInputProvider<Tin> inputProvider);
 
 
         ISpaceExplorer getExplorer();

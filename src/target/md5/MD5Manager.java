@@ -13,7 +13,13 @@ public class MD5Manager implements ISpaceExplorer.IManager<byte[], byte[]> {
 
     @Override
     public boolean _do(byte[] result, byte[] expected) {
-        return Arrays.equals(result, expected);
+
+        if(result.length != expected.length) return false;
+
+        for(int i = 0; i < result.length; i++)
+            if(result[i] != expected[i]) return false;
+
+        return true;
     }
 
     @Override

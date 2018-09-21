@@ -61,6 +61,8 @@ import services.utils.*;
 import services.engine.*;
 import pbi.*;
 
+import javax.sound.midi.SysexMessage;
+
 public class testManager implements ISpaceExplorer.IManager<int[], Integer> {
 
     @Override
@@ -70,6 +72,7 @@ public class testManager implements ISpaceExplorer.IManager<int[], Integer> {
 
     @Override
     public boolean _do(Integer result, Integer expected) {
+        System.out.println(result);
         return result.equals(expected);
     }
 

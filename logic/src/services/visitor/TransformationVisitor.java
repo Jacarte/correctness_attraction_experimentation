@@ -281,7 +281,7 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
 
         _serviceProvider.getTranslator().translate(n, leftType, rightType);
 
-        return getReturnType(n.getOperator());
+        return getReturnType(n, leftType, rightType);
     }
 
     @Override
@@ -340,7 +340,7 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
 
     @Override
     public Type visit(StringLiteralExpr n, Object arg) {
-        return null;
+        return new ClassOrInterfaceType("String");
     }
 
     @Override
@@ -422,7 +422,9 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
 
     @Override
     public Type visit(ObjectCreationExpr n, Object arg) {
-        n.getScope().accept(_serviceProvider.getVisitor(), arg);
+
+        if(n.getScope() !=null)
+            n.getScope().accept(_serviceProvider.getVisitor(), arg);
 
         return null;
     }
@@ -741,7 +743,10 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
         return new PrimitiveType(PrimitiveType.Primitive.Int);
     }
 
-    private Type getReturnType(BinaryExpr.Operator op){
+    private Type getReturnType(BinaryExpr expr, Type lType, Type rType){
+
+
+        BinaryExpr.Operator op =expr.getOperator();
 
         if(op == BinaryExpr.Operator.and
                 || op == BinaryExpr.Operator.equals
@@ -753,6 +758,17 @@ public class TransformationVisitor implements GenericVisitor<Type, Object> {
                 || op == BinaryExpr.Operator.or
         )
             return new PrimitiveType(PrimitiveType.Primitive.Boolean);
+
+        if(new PrimitiveType(PrimitiveType.Primitive.Char).equals(lType)
+          || new PrimitiveType(PrimitiveType.Primitive.Char).equals(rType))
+            return new PrimitiveType(PrimitiveType.Primitive.Char);
+
+        if(lType != null)
+            if(lType.toString().equals("String"))
+                return new ClassOrInterfaceType("String");
+        if(rType != null)
+            if(rType.toString().equals("String"))
+                return new ClassOrInterfaceType("String");
 
         return new PrimitiveType(PrimitiveType.Primitive.Int);
     }

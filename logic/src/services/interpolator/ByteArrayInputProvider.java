@@ -5,13 +5,14 @@ import services.utils.CommandLineParser;
 
 import java.util.Random;
 
-public class IntegerArrayInputProvider implements ISpaceExplorer.IInputProvider<int[]> {
+public class ByteArrayInputProvider implements ISpaceExplorer.IInputProvider<byte[]> {
+
 
     int count;
     int size;
 
 
-    public IntegerArrayInputProvider(){
+    public ByteArrayInputProvider(){
 
         size = Integer.parseInt(CommandLineParser.CONFIG.get("size"));
         count = size;
@@ -23,7 +24,7 @@ public class IntegerArrayInputProvider implements ISpaceExplorer.IInputProvider<
     }
 
     @Override
-    public int[] getIn() {
+    public byte[] getIn() {
         count--;
         return createRandomArray();
     }
@@ -34,9 +35,9 @@ public class IntegerArrayInputProvider implements ISpaceExplorer.IInputProvider<
     }
 
     @Override
-    public int[] copy(int[] in) {
+    public byte[] copy(byte[] in) {
 
-        int[] result = new int[in.length];
+        byte[] result = new byte[in.length];
 
         for(int i = 0; i < in.length; i++)
             result[i] = in[i];
@@ -44,15 +45,16 @@ public class IntegerArrayInputProvider implements ISpaceExplorer.IInputProvider<
         return result;
     }
 
-    int[] createRandomArray(){
-        Random r = new Random(1001231);
 
-        int size = 100;
+    byte[] createRandomArray(){
+        Random r = new Random(0);
 
-        int[] result = new int[size];
+        int size = r.nextInt(100);
+
+        byte[] result = new byte[size];
 
         for(int i = 0; i < result.length; i++){
-            result[i] = (int)(r.nextLong() - Integer.MAX_VALUE);
+            result[i] = (byte)r.nextInt(255);
         }
 
         return result;

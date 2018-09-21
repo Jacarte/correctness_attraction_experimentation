@@ -10,12 +10,12 @@ public interface ISpaceExplorer {
                                IAnswerChecker<Tout> checker,
                                IExpectedProvider<Tin, Tout> provider,
                                IInputProvider<Tin> inputProvider,
-                               ILogger logger);
+                               List<ILogger> logger);
     <Tin, Tout> void makeSpace(List<IPerturbationPoint> pbis,
                                IPerturbationEngine engine,
                                IManager<Tin, Tout> manager,
                                IInputProvider<Tin> inputProvider,
-                               ILogger logger);
+                               List<ILogger> logger);
 
     <Tin, Tout> Tout executePerturbation(IPerturbationPoint pbi, IPerturbationModel model, ICallback<Tin, Tout> callback, Tin input, int time);
 

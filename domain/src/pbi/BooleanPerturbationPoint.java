@@ -23,7 +23,9 @@ public class BooleanPerturbationPoint extends PerturbationPoint implements IBool
     @Override
     public boolean getValue(boolean original) {
 
-        if(action != null)
+        this.setTime(this.getCurrentTime() + 1);
+
+        if(action != null && this.getCurrentTime() - 1 == perturbAt)
             return action.perturb(original);
 
         return original;
@@ -36,11 +38,14 @@ public class BooleanPerturbationPoint extends PerturbationPoint implements IBool
 
     @Override
     public void perturb(IPerturbationModel model, int time) {
+
+        perturbAt = time;
         model.accept(this);
     }
 
     @Override
     public void reset(IPerturbationModel model) {
+        perturbAt = -2;
         model.reset(this);
     }
 }

@@ -1,9 +1,10 @@
-package services.utils;
+package services.utils.loggers;
 
 import services.engine.ILogger;
 import services.engine.IPerturbationPoint;
 import services.engine.ISpaceExplorer;
 import services.engine.ISummariesCollector;
+import services.utils.StaticUtils;
 
 import java.text.DecimalFormat;
 import java.util.Map;
@@ -49,27 +50,19 @@ public class ConsoleLoggerService implements ILogger {
 
             DecimalFormat format = new DecimalFormat("#");
 
-            System.out.println(String.format("%s %s %s %s %s ",
-                    StaticUtils.padRight(" " + index++, 7),
+            System.out.println(String.format("%s %s %s %s %s %s",
+                    StaticUtils.padRight(" " + pbi.getIndex(), 7),
                     StaticUtils.padLeft(" " + sum.correctCount, 7),
                     StaticUtils.padLeft(" " + sum.brokenCount, 7),
                     StaticUtils.padLeft(" " + sum.errorCount, 7),
-                    StaticUtils.padRight("  " + format.format(sum.correctProportion * 100) + "% ", 10)
+                    StaticUtils.padRight("  " + format.format(sum.correctProportion * 100) + "% ", 10),
+                    StaticUtils.padRight(pbi.getOriginalExpression(), 12)
 
                      ));
 
         }
 
         System.out.println("");
-        System.out.print("[");
-
-        for(IPerturbationPoint pbi: summary.proportions.keySet()){
-
-            ISummariesCollector.PointSummary sum = summary.proportions.get(pbi);
-
-            System.out.print(String.format("%s,", sum.correctProportion));
-            }
-        System.out.println("]");
 
     }
 

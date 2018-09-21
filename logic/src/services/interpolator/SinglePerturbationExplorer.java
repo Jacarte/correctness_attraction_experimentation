@@ -1,30 +1,23 @@
 package services.interpolator;
 
-import jdk.nashorn.internal.codegen.CompilerConstants;
 import services.engine.*;
 import services.utils.IServiceProvider;
 import services.utils.StaticUtils;
 import services.utils.SummariesCollector;
 
-import java.lang.management.MemoryUsage;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class SinglePerturbationExplorer implements ISpaceExplorer {
 
     final Lock _lock = new ReentrantLock();
 
     @Override
-    public <Tin, Tout> void makeSpace(List<IPerturbationPoint> pbis, ICallback<Tin, Tout> callback, IPerturbationEngine engine, IAnswerChecker<Tout> checker, IExpectedProvider<Tin, Tout> provider, IInputProvider<Tin> inputProvider, ILogger logger) {
+    public <Tin, Tout> void makeSpace(List<IPerturbationPoint> pbis, ICallback<Tin, Tout> callback, IPerturbationEngine engine, IAnswerChecker<Tout> checker, IExpectedProvider<Tin, Tout> provider, IInputProvider<Tin> inputProvider, List<ILogger> logger) {
 
         Map<IPerturbationPoint, PbiSummary> summaries = new TreeMap<>();
-
-        int executionCounter = 0;
-        int total = 0;
 
         ExecutorService executor = Executors.newFixedThreadPool(1);
 
@@ -57,8 +50,6 @@ public class SinglePerturbationExplorer implements ISpaceExplorer {
                 if(!accessCount.containsKey(pbi))
                     continue;;
 
-                total += accessCount.get(pbi);
-
                 for(int i = 0; i < accessCount.get(pbi); i++) {
 
                     pbi.setTime(0);
@@ -70,8 +61,6 @@ public class SinglePerturbationExplorer implements ISpaceExplorer {
                         };
 
                         try {
-
-                            executionCounter++;
 
                             summary = new SummariesCollector().getWholeSummary(summaries);
 
@@ -86,37 +75,20 @@ public class SinglePerturbationExplorer implements ISpaceExplorer {
 
                             time = System.currentTimeMillis() - time;
 
-                            /*StaticUtils.serviceProvider.getLoggerService().reportStatus("Perturbing",
-                                    ((double)executionCounter/total),  String.format("%s/%s", executionCounter, total)
-                                            + " ratio: " + summary.correctnessRatio + " Execution "
-                                            + pbi.getName()
-                                            + " "
-                                            + pbi.getIndex()
-                                            + " "
-                                            + time
-                                            + " ms");*/
 
 
-                            if (checker._do(expected, result))
+                            if (result != null && checker._do(result, expected))
                                 summaries.get(pbi).successCount++;
                             else
                                 summaries.get(pbi).wrongCount++;
 
-                        } catch (InterruptedException e) {
-                            //e.printStackTrace();
-                            summaries.get(pbi).errorCount++;
-                            // StaticUtils.serviceProvider.getLoggerService().reportStatus("Perturbing", ((double)executionCounter/total), "Finishing with..." + e.getMessage());
-
                             //System.out.println();
-                        } catch (ExecutionException e) {
-                            //e.printStackTrace();
-                            summaries.get(pbi).errorCount++;
-                            // StaticUtils.serviceProvider.getLoggerService().reportStatus("Perturbing", ((double)executionCounter/total), "Finishing with..." + e.getMessage());
                         } catch (Exception e) {
                             //e.printStackTrace();
                             summaries.get(pbi).errorCount++;
                             // StaticUtils.serviceProvider.getLoggerService().reportStatus("Perturbing", ((double)executionCounter/total), "Finishing with...timeout");
                         }
+                        pbi.setTime(-2);
                 }
 
 
@@ -129,13 +101,15 @@ public class SinglePerturbationExplorer implements ISpaceExplorer {
 
         summary = new SummariesCollector().getWholeSummary(summaries);
 
-        logger.logResult(summary);
+        ISummariesCollector.WholeSummary finalSummary = summary;
+        logger.forEach(l ->
+                l.logResult(finalSummary));
 
         executor.shutdown();
     }
 
     @Override
-    public <Tin, Tout> void makeSpace(List<IPerturbationPoint> pbis, IPerturbationEngine engine, IManager<Tin, Tout> manager, IInputProvider<Tin> inputProvider, ILogger logger) {
+    public <Tin, Tout> void makeSpace(List<IPerturbationPoint> pbis, IPerturbationEngine engine, IManager<Tin, Tout> manager, IInputProvider<Tin> inputProvider, List<ILogger> logger) {
         makeSpace(pbis, manager, engine, manager, manager, inputProvider, logger);
     }
 

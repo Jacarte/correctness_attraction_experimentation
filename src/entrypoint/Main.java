@@ -2,7 +2,10 @@ package entrypoint;
 
 import com.github.antlrjavaparser.JavaParser;
 import com.github.antlrjavaparser.api.*;
+import services.interpolator.ByteArrayInputProvider;
 import services.interpolator.IntegerArrayInputProvider;
+import services.interpolator.RandomStringInterpolator;
+import services.interpolator.SudokuInputProvider;
 import services.utils.*;
 import target.maximum.testIntr;
 import target.maximum.testManager;
@@ -12,6 +15,8 @@ import target.quicksort.QuickSortIntr;
 import target.quicksort.QuickSortManager;
 import target.sudoku.SudokuIntr;
 import target.sudoku.SudokuManager;
+import target.zip.LZWIntr;
+import target.zip.ZipManager;
 //import target.testIntr;
 
 import java.io.*;
@@ -57,12 +62,17 @@ public class Main {
         System.out.println("-r -time x -size x -type <pbool>|<pone> -target <qs>: run perturbation experiment");
     }
 
-    public static void runPerturbation(){
+    public static void runPerturbation() {
+
+        System.out.println("Parsing command line");
 
         new CommandLineParser().run(1, args);
 
+        String target = CommandLineParser.CONFIG.get("target");
 
-        switch (target){
+        System.out.println(target);
+
+        switch (target) {
             case "qs": // Quick sort
                 QuickSortIntr.setupPerturbation();
                 provider.getPerturbationEngine().setFileName("QuickSort.java");
@@ -86,7 +96,14 @@ public class Main {
                 provider.getPerturbationEngine().makeSpace(new MD5Manager(), new ByteArrayInputProvider());
                 break;
 
+            case "zip":
+                LZWIntr.setupPerturbation();
+                provider.getPerturbationEngine().setFileName("LZW.java");
+                provider.getPerturbationEngine().makeSpace(new ZipManager(), new RandomStringInterpolator());
+                break;
 
+
+        }
     }
 
 }

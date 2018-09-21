@@ -6,13 +6,10 @@ import services.api.ITranslator;
 import services.engine.ILogger;
 import services.engine.IPerturbationEngine;
 import services.engine.IPerturbationModel;
-import services.interpolator.IBooleanInterpolator;
-import services.interpolator.IntegerInterpolator;
-import services.interpolator.Interpolator;
 import com.github.antlrjavaparser.api.type.*;
 import services.policies.IPolicyFactory;
 
-import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 public interface IServiceProvider {
 
@@ -26,7 +23,7 @@ public interface IServiceProvider {
 
     IPerturbationEngine getPerturbationEngine();
 
-    ILogger getLogger();
+    List<ILogger> getLogger();
 
     IStatusLoggerService getLoggerService();
 

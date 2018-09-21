@@ -6,6 +6,7 @@ import com.github.antlrjavaparser.api.body.*;
 import com.github.antlrjavaparser.api.expr.*;
 import com.github.antlrjavaparser.api.stmt.*;
 import com.github.antlrjavaparser.api.type.*;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import services.api.INamingService;
 import services.api.ITranslator;
 
@@ -52,6 +53,7 @@ public class Translator implements ITranslator {
 
     @Override
     public void translate(AssignExpr expr, Type target) {
+
         expr.setValue(translateExpression(expr.getValue(), target));
     }
 
@@ -76,7 +78,7 @@ public class Translator implements ITranslator {
 
     private Expression translateExpression(Expression base, Type t){
 
-        if(t == null)
+        if(t == null || base == null)
             return base;
         if(base instanceof MethodCallExpr){
             String name = ((MethodCallExpr)base).getName();
@@ -92,9 +94,13 @@ public class Translator implements ITranslator {
 
         pbi.pbiIndex = _namingService.getPbiIndex();
 
-        pbi.colNumber = base.getBeginColumn() + colCumul;
-        pbi.rowNumber = base.getEndLine() + colCumul;
-
+        try {
+            pbi.colNumber = base.getBeginColumn() + colCumul;
+            pbi.rowNumber = base.getEndLine() + colCumul;
+        }
+        catch (Exception e){
+            //e.printStackTrace();
+        }
         pbi.fileName = this.fileName;
 
         pbi.variableId = perturbationName;
@@ -125,13 +131,26 @@ public class Translator implements ITranslator {
     @Override
     public void translate(BinaryExpr expr, Type leftType, Type rightType) {
 
-        Type t = leftType;
+        Type l = leftType;
+        Type r = rightType;
 
-        if(leftType == null)
-            t = rightType;
+        if(expr.getOperator() == BinaryExpr.Operator.plus){
 
-        expr.setLeft(translateExpression(expr.getLeft(), t));
-        expr.setRight(translateExpression(expr.getRight(), t));
+
+            if(new PrimitiveType(PrimitiveType.Primitive.Char).equals(l) ||
+                    new PrimitiveType(PrimitiveType.Primitive.Char).equals(r) ) {
+                return;
+            }
+
+            if((l != null && l.toString().equals("String")) || (r != null && r.toString().equals("String")))
+                return;
+        }
+
+        if(l == null || !l.equals(r))
+            return;
+
+        expr.setLeft(translateExpression(expr.getLeft(), l));
+        expr.setRight(translateExpression(expr.getRight(), l));
 
     }
 
@@ -162,8 +181,8 @@ public class Translator implements ITranslator {
     @Override
     public void translate(SwitchEntryStmt expr, Type labelType) {
 
-        if(expr.getLabel() != null)
-            expr.setLabel(translateExpression(expr.getLabel(), labelType));
+        //if(expr.getLabel() != null)
+        //    expr.setLabel(translateExpression(expr.getLabel(), labelType));
 
     }
 
@@ -290,7 +309,7 @@ public class Translator implements ITranslator {
                                 Arrays.asList(
                                         new StringLiteralExpr(String.format("%s (%s:%s)", pbi.fileName, pbi.rowNumber, pbi.colNumber)),
                                         new IntegerLiteralExpr(String.valueOf(pbi.pbiIndex - 1)),
-                                        new StringLiteralExpr(pbi.original),
+                                        new StringLiteralExpr(pbi.original.replace("\"", "\\\"")),
                                         new NameExpr("_serviceProvider")
                                 )), AssignExpr.Operator.assign)
         ));

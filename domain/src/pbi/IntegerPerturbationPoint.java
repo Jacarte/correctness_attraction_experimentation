@@ -13,7 +13,7 @@ public class IntegerPerturbationPoint extends PerturbationPoint implements IInte
 
     IServiceProvider serviceProvider;
 
-    public IntegerPerturbationPoint(String location, int index, String originalExpression, IServiceProvider provider) {
+    public IntegerPerturbationPoint( String location, int index, String originalExpression, IServiceProvider provider) {
         super(location, index, originalExpression, provider);
 
         this.serviceProvider = _serviceProvider;

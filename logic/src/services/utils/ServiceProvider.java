@@ -9,14 +9,14 @@ import services.Translator;
 import services.api.INamingService;
 import services.api.ITranslator;
 import services.engine.*;
-import services.interpolator.*;
 import services.policies.IPolicyFactory;
+import services.utils.loggers.ConsoleLoggerService;
+import services.utils.loggers.FileLoggerService;
+import services.utils.loggers.PythonDataLogger;
 import services.visitor.TransformationVisitor;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.Arrays;
+import java.util.List;
 
 public class ServiceProvider implements IServiceProvider {
 
@@ -82,11 +82,15 @@ public class ServiceProvider implements IServiceProvider {
         return engine;
     }
 
-    static ILogger logger;
+    static List<ILogger> logger = Arrays.asList(
+            new FileLoggerService(),
+            new ConsoleLoggerService(),
+            new PythonDataLogger()
+            );
 
     @Override
-    public ILogger getLogger() {
-        if(logger == null) logger = new ConsoleLoggerService();
+    public List<ILogger> getLogger() {
+
         return logger;
     }
 

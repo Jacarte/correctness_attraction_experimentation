@@ -70,12 +70,13 @@ public class PerturbationEngine implements IPerturbationEngine {
 
     @Override
     public boolean isPoneEnabled() {
-        return true;
+
+        return CommandLineParser.CONFIG.get("type").equals("pone");
     }
 
     @Override
     public boolean isPBoolEnabled() {
-        return false;
+        return CommandLineParser.CONFIG.get("type").equals("pbool");
     }
 
     @Override

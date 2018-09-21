@@ -5,13 +5,13 @@ import services.utils.CommandLineParser;
 
 import java.util.Random;
 
-public class IntegerArrayInputProvider implements ISpaceExplorer.IInputProvider<int[]> {
+public class RandomStringInterpolator implements ISpaceExplorer.IInputProvider<String> {
 
     int count;
     int size;
 
 
-    public IntegerArrayInputProvider(){
+    public RandomStringInterpolator(){
 
         size = Integer.parseInt(CommandLineParser.CONFIG.get("size"));
         count = size;
@@ -23,7 +23,7 @@ public class IntegerArrayInputProvider implements ISpaceExplorer.IInputProvider<
     }
 
     @Override
-    public int[] getIn() {
+    public String getIn() {
         count--;
         return createRandomArray();
     }
@@ -34,25 +34,21 @@ public class IntegerArrayInputProvider implements ISpaceExplorer.IInputProvider<
     }
 
     @Override
-    public int[] copy(int[] in) {
+    public String copy(String in) {
 
-        int[] result = new int[in.length];
-
-        for(int i = 0; i < in.length; i++)
-            result[i] = in[i];
-
-        return result;
+        StringBuilder builder = new StringBuilder(in);
+        return builder.toString();
     }
 
-    int[] createRandomArray(){
+    String createRandomArray(){
         Random r = new Random(1001231);
 
-        int size = 100;
+        int size = r.nextInt(1000);
 
-        int[] result = new int[size];
+        String result = "";
 
-        for(int i = 0; i < result.length; i++){
-            result[i] = (int)(r.nextLong() - Integer.MAX_VALUE);
+        for(int i = 0; i < size; i++){
+            result += ((char)r.nextInt(256));
         }
 
         return result;
